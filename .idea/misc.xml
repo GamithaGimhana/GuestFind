@@ -12,12 +12,11 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/GuestFind-BackEnd/pom.xml" />
-        <option value="$PROJECT_DIR$/backend/pom.xml" />
         <option value="$PROJECT_DIR$/guestfind_backend/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_24" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
