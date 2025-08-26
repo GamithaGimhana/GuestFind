@@ -11,4 +11,5 @@ public interface LostItemService {
     List<LostItemResponseDTO> getAllLostItems();
     LostItemResponseDTO updateLostItem(Long id, LostItemRequestDTO requestDTO);
     void deleteLostItem(Long id);
+    LostItemResponseDTO updateStatus(Long id, String status);
 }

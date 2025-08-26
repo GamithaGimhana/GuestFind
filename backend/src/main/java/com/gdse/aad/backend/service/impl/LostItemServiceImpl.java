@@ -73,4 +73,21 @@ public class LostItemServiceImpl implements LostItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("Lost item not found"));
         lostItemRepository.delete(existing);
     }
+
+    @Override
+    public LostItemResponseDTO updateStatus(Long id, String status) {
+        LostItem item = lostItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lost item not found with id: " + id));
+
+        LostItem.Status newStatus;
+        try {
+            newStatus = LostItem.Status.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid status. Allowed: PENDING, MATCHED, CLOSED");
+        }
+
+        item.setStatus(newStatus);
+        LostItem saved = lostItemRepository.save(item);
+        return modelMapper.map(saved, LostItemResponseDTO.class);
+    }
 }

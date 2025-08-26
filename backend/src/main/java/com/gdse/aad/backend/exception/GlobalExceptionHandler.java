@@ -42,4 +42,10 @@ public class GlobalExceptionHandler {
     public ApiResponseDTO handleAllExceptions(RuntimeException ex) {
         return new ApiResponseDTO(500, "Internal Server Error", null);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponseDTO handleIllegalArgument(IllegalArgumentException ex) {
+        return new ApiResponseDTO(400, ex.getMessage(), null);
+    }
 }
