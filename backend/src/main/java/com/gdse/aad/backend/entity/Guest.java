@@ -28,6 +28,9 @@ public class Guest {
     @Column(length = 15)
     private String phone;
 
+    @Column(nullable = false)
+    private String passwordHash;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL, orphanRemoval = true)
