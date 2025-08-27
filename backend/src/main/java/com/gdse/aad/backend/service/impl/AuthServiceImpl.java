@@ -3,8 +3,10 @@ package com.gdse.aad.backend.service.impl;
 import com.gdse.aad.backend.dto.AuthDTO;
 import com.gdse.aad.backend.dto.AuthResponseDTO;
 import com.gdse.aad.backend.dto.RegisterDTO;
+import com.gdse.aad.backend.entity.Guest;
 import com.gdse.aad.backend.entity.Hotel;
 import com.gdse.aad.backend.entity.HotelStaff;
+import com.gdse.aad.backend.repository.GuestRepository;
 import com.gdse.aad.backend.repository.HotelRepository;
 import com.gdse.aad.backend.repository.HotelStaffRepository;
 import com.gdse.aad.backend.service.AuthService;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final HotelStaffRepository hotelStaffRepository;
+    private final GuestRepository guestRepository;
     private final HotelRepository hotelRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -56,4 +59,34 @@ public class AuthServiceImpl implements AuthService {
         hotelStaffRepository.save(staff);
         return "User registered successfully";
     }
+
+    @Override
+    public AuthResponseDTO guestAuthenticate(AuthDTO authDTO) {
+        var guest = guestRepository.findByEmail(authDTO.getUsername())
+                .orElseThrow(() -> new RuntimeException("Guest not found"));
+
+        if (!passwordEncoder.matches(authDTO.getPassword(), guest.getPasswordHash())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
+
+        String token = jwtUtil.generateToken(guest.getEmail(), "GUEST");
+        return new AuthResponseDTO(token);
+    }
+
+    @Override
+    public String guestRegister(RegisterDTO dto) {
+        guestRepository.findByEmail(dto.getUsername()).ifPresent(u -> {
+            throw new RuntimeException("Guest already exists");
+        });
+
+        Guest guest = Guest.builder()
+                .name(dto.getName())
+                .email(dto.getUsername())
+                .passwordHash(passwordEncoder.encode(dto.getPassword()))
+                .build();
+
+        guestRepository.save(guest);
+        return "Guest registered successfully";
+    }
+
 }

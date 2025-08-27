@@ -25,4 +25,17 @@ public class AuthController {
         var data = authService.authenticate(dto);
         return ResponseEntity.ok(new ApiResponseDTO(200, "OK", data));
     }
+
+    @PostMapping("/guest/register")
+    public ResponseEntity<ApiResponseDTO> guestRegister(@RequestBody RegisterDTO dto) {
+        String msg = authService.guestRegister(dto);
+        return ResponseEntity.ok(new ApiResponseDTO(200, msg, null));
+    }
+
+    @PostMapping("/guest/login")
+    public ResponseEntity<ApiResponseDTO> guestLogin(@RequestBody AuthDTO dto) {
+        var data = authService.guestAuthenticate(dto);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", data));
+    }
+
 }
