@@ -11,6 +11,7 @@ import com.gdse.aad.backend.service.LostItemService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class LostItemServiceImpl implements LostItemService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO) {
         Guest guest = guestRepository.findById(requestDTO.getGuestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
@@ -36,25 +38,37 @@ public class LostItemServiceImpl implements LostItemService {
                 .build();
 
         LostItem saved = lostItemRepository.save(lostItem);
-        return modelMapper.map(saved, LostItemResponseDTO.class);
+
+        // Ensure guestName is set in the response
+        LostItemResponseDTO dto = modelMapper.map(saved, LostItemResponseDTO.class);
+        dto.setGuestName(saved.getGuest().getName());
+        return dto;
     }
 
     @Override
     public LostItemResponseDTO getLostItemById(Long id) {
         LostItem lostItem = lostItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lost item not found"));
-        return modelMapper.map(lostItem, LostItemResponseDTO.class);
+
+        LostItemResponseDTO dto = modelMapper.map(lostItem, LostItemResponseDTO.class);
+        dto.setGuestName(lostItem.getGuest().getName());
+        return dto;
     }
 
     @Override
     public List<LostItemResponseDTO> getAllLostItems() {
         List<LostItem> items = lostItemRepository.findAll();
         return items.stream()
-                .map(item -> modelMapper.map(item, LostItemResponseDTO.class))
+                .map(item -> {
+                    LostItemResponseDTO dto = modelMapper.map(item, LostItemResponseDTO.class);
+                    dto.setGuestName(item.getGuest().getName());
+                    return dto;
+                })
                 .toList();
     }
 
     @Override
+    @Transactional
     public LostItemResponseDTO updateLostItem(Long id, LostItemRequestDTO requestDTO) {
         LostItem existing = lostItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lost item not found"));
@@ -64,10 +78,14 @@ public class LostItemServiceImpl implements LostItemService {
         existing.setImagePath(requestDTO.getImagePath());
 
         LostItem updated = lostItemRepository.save(existing);
-        return modelMapper.map(updated, LostItemResponseDTO.class);
+
+        LostItemResponseDTO dto = modelMapper.map(updated, LostItemResponseDTO.class);
+        dto.setGuestName(updated.getGuest().getName());
+        return dto;
     }
 
     @Override
+    @Transactional
     public void deleteLostItem(Long id) {
         LostItem existing = lostItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lost item not found"));
@@ -75,6 +93,7 @@ public class LostItemServiceImpl implements LostItemService {
     }
 
     @Override
+    @Transactional
     public LostItemResponseDTO updateStatus(Long id, String status) {
         LostItem item = lostItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lost item not found with id: " + id));
@@ -88,6 +107,9 @@ public class LostItemServiceImpl implements LostItemService {
 
         item.setStatus(newStatus);
         LostItem saved = lostItemRepository.save(item);
-        return modelMapper.map(saved, LostItemResponseDTO.class);
+
+        LostItemResponseDTO dto = modelMapper.map(saved, LostItemResponseDTO.class);
+        dto.setGuestName(saved.getGuest().getName());
+        return dto;
     }
 }
