@@ -1,8 +1,6 @@
 package com.gdse.aad.backend.service.impl;
 
-import com.gdse.aad.backend.dto.AuthDTO;
-import com.gdse.aad.backend.dto.AuthResponseDTO;
-import com.gdse.aad.backend.dto.RegisterDTO;
+import com.gdse.aad.backend.dto.*;
 import com.gdse.aad.backend.entity.Guest;
 import com.gdse.aad.backend.entity.Hotel;
 import com.gdse.aad.backend.entity.HotelStaff;
@@ -61,8 +59,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponseDTO guestAuthenticate(AuthDTO authDTO) {
-        var guest = guestRepository.findByEmail(authDTO.getUsername())
+    public AuthResponseDTO guestAuthenticate(GuestLoginDTO authDTO) {
+        var guest = guestRepository.findByEmail(authDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("Guest not found"));
 
         if (!passwordEncoder.matches(authDTO.getPassword(), guest.getPasswordHash())) {
@@ -74,14 +72,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String guestRegister(RegisterDTO dto) {
-        guestRepository.findByEmail(dto.getUsername()).ifPresent(u -> {
+    public String guestRegister(GuestRegisterDTO dto) {
+        guestRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
             throw new RuntimeException("Guest already exists");
         });
 
         Guest guest = Guest.builder()
                 .name(dto.getName())
-                .email(dto.getUsername())
+                .email(dto.getEmail())
                 .passwordHash(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
