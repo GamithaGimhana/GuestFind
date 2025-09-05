@@ -2,6 +2,7 @@ package com.gdse.aad.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,8 @@ public class Delivery {
     @Column(columnDefinition = "TEXT")
     private String address;
 
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime deliveryDate;
 
     @Enumerated(EnumType.STRING)

@@ -2,6 +2,7 @@ package com.gdse.aad.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -26,5 +27,7 @@ public class MatchRecord {
     @JoinColumn(name = "found_id", nullable = false)
     private FoundItem foundItem;
 
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime matchDate = LocalDateTime.now();
 }
