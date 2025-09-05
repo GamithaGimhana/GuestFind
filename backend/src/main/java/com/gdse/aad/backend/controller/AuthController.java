@@ -20,7 +20,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponseDTO> register(@RequestBody RegisterDTO dto) {
         String msg = authService.register(dto);
-        return ResponseEntity.ok(new ApiResponseDTO(200, msg, null));
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", msg));
     }
 
     @PostMapping("/login")
@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/guest/register")
     public ResponseEntity<ApiResponseDTO> guestRegister(@RequestBody GuestRegisterDTO dto) {
         String msg = authService.guestRegister(dto);
-        return ResponseEntity.ok(new ApiResponseDTO(200, msg, null));
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", msg));
     }
 
     @PostMapping("/guest/login")

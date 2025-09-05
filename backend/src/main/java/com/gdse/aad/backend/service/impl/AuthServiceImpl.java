@@ -4,6 +4,7 @@ import com.gdse.aad.backend.dto.*;
 import com.gdse.aad.backend.entity.Guest;
 import com.gdse.aad.backend.entity.Hotel;
 import com.gdse.aad.backend.entity.HotelStaff;
+import com.gdse.aad.backend.exception.ResourceNotFoundException;
 import com.gdse.aad.backend.repository.GuestRepository;
 import com.gdse.aad.backend.repository.HotelRepository;
 import com.gdse.aad.backend.repository.HotelStaffRepository;
@@ -11,6 +12,7 @@ import com.gdse.aad.backend.service.AuthService;
 import com.gdse.aad.backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +29,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
         var staff = hotelStaffRepository.findByEmail(authDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(authDTO.getPassword(), staff.getPasswordHash())) {
             throw new BadCredentialsException("Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(staff.getEmail(), staff.getRole().name());
-        return new AuthResponseDTO(token);
+        StaffProfileDTO staffProfileDTO = new StaffProfileDTO(staff.getStaffId(), staff.getName(), staff.getEmail(), staff.getRole().name(), staff.getHotel().getName());
+        return new AuthResponseDTO(token, staffProfileDTO);
     }
 
     @Override
@@ -44,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
         });
 
         Hotel hotel = hotelRepository.findById(dto.getHotelId())
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found"));
 
         HotelStaff staff = HotelStaff.builder()
                 .name(dto.getName())
@@ -61,14 +64,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDTO guestAuthenticate(GuestLoginDTO authDTO) {
         var guest = guestRepository.findByEmail(authDTO.getEmail())
-                .orElseThrow(() -> new RuntimeException("Guest not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Guest not found"));
 
         if (!passwordEncoder.matches(authDTO.getPassword(), guest.getPasswordHash())) {
             throw new BadCredentialsException("Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(guest.getEmail(), "GUEST");
-        return new AuthResponseDTO(token);
+        GuestDTO guestDTO = new GuestDTO(guest.getGuestId(), guest.getName(), guest.getEmail(), guest.getPhone());
+        return new AuthResponseDTO(token, guestDTO);
     }
 
     @Override
@@ -80,6 +84,7 @@ public class AuthServiceImpl implements AuthService {
         Guest guest = Guest.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
+                .phone(dto.getPhone())
                 .passwordHash(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
