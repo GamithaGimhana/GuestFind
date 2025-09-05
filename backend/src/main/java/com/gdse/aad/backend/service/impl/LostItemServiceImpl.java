@@ -13,6 +13,7 @@ import com.gdse.aad.backend.repository.LostItemRepository;
 import com.gdse.aad.backend.repository.MatchRecordRepository;
 import com.gdse.aad.backend.service.LostItemService;
 import com.gdse.aad.backend.service.NotificationService;
+import com.gdse.aad.backend.util.ItemMatcher;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class LostItemServiceImpl implements LostItemService {
         // Auto-match: check against existing found items
         List<FoundItem> foundItems = foundItemRepository.findByStatus(FoundItem.Status.UNCLAIMED);
         for (FoundItem found : foundItems) {
-            if (isMatch(saved, found)) {
+            if (ItemMatcher.isMatch(saved, found)) {
                 MatchRecord record = MatchRecord.builder()
                         .lostItem(saved)
                         .foundItem(found)
@@ -73,23 +74,21 @@ public class LostItemServiceImpl implements LostItemService {
         return dto;
     }
 
-    private boolean isMatch(LostItem lost, FoundItem found) {
-        // Simple keyword-based match
-        String lostTitle = lost.getTitle().toLowerCase();
-        String foundTitle = found.getTitle().toLowerCase();
-
-        // exact match OR one contains the other
-        if (lostTitle.equals(foundTitle)) return true;
-        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
-
-        // you can also add description-based check
-        String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
-        String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
-
-        return !lostDesc.isEmpty() && !foundDesc.isEmpty() && lostDesc.contains(foundDesc);
-    }
-
-
+//    private boolean isMatch(LostItem lost, FoundItem found) {
+//        // Simple keyword-based match
+//        String lostTitle = lost.getTitle().toLowerCase();
+//        String foundTitle = found.getTitle().toLowerCase();
+//
+//        // exact match OR one contains the other
+//        if (lostTitle.equals(foundTitle)) return true;
+//        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
+//
+//        // you can also add description-based check
+//        String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
+//        String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
+//
+//        return !lostDesc.isEmpty() && !foundDesc.isEmpty() && lostDesc.contains(foundDesc);
+//    }
 
     @Override
     public LostItemResponseDTO getLostItemById(Long id) {
