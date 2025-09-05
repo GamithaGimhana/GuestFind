@@ -23,6 +23,7 @@ public class HotelStaffServiceImpl implements HotelStaffService {
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
 
         return new StaffProfileDTO(
+                staff.getStaffId(),
                 staff.getName(),
                 staff.getEmail(),
                 staff.getRole().name(),
@@ -34,6 +35,7 @@ public class HotelStaffServiceImpl implements HotelStaffService {
     public List<StaffProfileDTO> getAllStaff() {
         return hotelStaffRepository.findAll().stream()
                 .map(staff -> new StaffProfileDTO(
+                        staff.getStaffId(),
                         staff.getName(),
                         staff.getEmail(),
                         staff.getRole().name(),
