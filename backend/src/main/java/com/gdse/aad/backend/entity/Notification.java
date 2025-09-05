@@ -34,7 +34,7 @@ public class Notification {
     private Type type;
 
     @Column(nullable = false)
-    private boolean read = false;
+    private boolean isRead = false;
 
     public enum Type {
         EMAIL, SMS

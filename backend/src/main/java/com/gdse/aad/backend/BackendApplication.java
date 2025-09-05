@@ -1,9 +1,11 @@
 package com.gdse.aad.backend;
 
 import com.gdse.aad.backend.dto.LostItemRequestDTO;
+import com.gdse.aad.backend.dto.NotificationResponseDTO;
 import com.gdse.aad.backend.entity.Hotel;
 import com.gdse.aad.backend.entity.HotelStaff;
 import com.gdse.aad.backend.entity.LostItem;
+import com.gdse.aad.backend.entity.Notification;
 import com.gdse.aad.backend.repository.HotelRepository;
 import com.gdse.aad.backend.repository.HotelStaffRepository;
 import org.modelmapper.ModelMapper;
@@ -24,9 +26,11 @@ public class BackendApplication {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        // Example: skip LostItem ID when mapping from request DTO
         modelMapper.typeMap(LostItemRequestDTO.class, LostItem.class)
                 .addMappings(mapper -> mapper.skip(LostItem::setLostId));
+
+        modelMapper.typeMap(Notification.class, NotificationResponseDTO.class)
+                .addMappings(mapper -> mapper.map(Notification::getNotificationId, NotificationResponseDTO::setId));
 
         return modelMapper;
     }
