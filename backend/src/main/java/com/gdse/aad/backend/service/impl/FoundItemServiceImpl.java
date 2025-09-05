@@ -47,10 +47,10 @@ public class FoundItemServiceImpl implements FoundItemService {
 
         FoundItem saved = foundItemRepository.save(foundItem);
 
-        // Auto-match logic
+        // Auto-match logic with keyword matching
         List<LostItem> lostItems = lostItemRepository.findByStatus(LostItem.Status.PENDING);
         for (LostItem lost : lostItems) {
-            if (lost.getTitle().equalsIgnoreCase(saved.getTitle())) {
+            if (isMatch(lost, saved)) {
                 MatchRecord record = MatchRecord.builder()
                         .lostItem(lost)
                         .foundItem(saved)
@@ -73,6 +73,21 @@ public class FoundItemServiceImpl implements FoundItemService {
         return dtoResp;
     }
 
+    private boolean isMatch(LostItem lost, FoundItem found) {
+        String lostTitle = lost.getTitle().toLowerCase();
+        String foundTitle = found.getTitle().toLowerCase();
+
+        // exact match OR one contains the other
+        if (lostTitle.equals(foundTitle)) return true;
+        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
+
+        // description-based check
+        String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
+        String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
+
+        return !lostDesc.isEmpty() && !foundDesc.isEmpty() && lostDesc.contains(foundDesc);
+    }
+
     @Override
     public List<FoundItemResponseDTO> getAllFoundItems() {
         return foundItemRepository.findAll()
@@ -85,4 +100,3 @@ public class FoundItemServiceImpl implements FoundItemService {
                 .toList();
     }
 }
-
