@@ -2,12 +2,17 @@ package com.gdse.aad.backend.service.impl;
 
 import com.gdse.aad.backend.dto.LostItemRequestDTO;
 import com.gdse.aad.backend.dto.LostItemResponseDTO;
+import com.gdse.aad.backend.entity.FoundItem;
 import com.gdse.aad.backend.entity.Guest;
 import com.gdse.aad.backend.entity.LostItem;
+import com.gdse.aad.backend.entity.MatchRecord;
 import com.gdse.aad.backend.exception.ResourceNotFoundException;
+import com.gdse.aad.backend.repository.FoundItemRepository;
 import com.gdse.aad.backend.repository.GuestRepository;
 import com.gdse.aad.backend.repository.LostItemRepository;
+import com.gdse.aad.backend.repository.MatchRecordRepository;
 import com.gdse.aad.backend.service.LostItemService;
+import com.gdse.aad.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,8 +25,11 @@ import java.util.List;
 public class LostItemServiceImpl implements LostItemService {
 
     private final LostItemRepository lostItemRepository;
+    private final FoundItemRepository foundItemRepository;
+    private final MatchRecordRepository matchRecordRepository;
     private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -39,11 +47,49 @@ public class LostItemServiceImpl implements LostItemService {
 
         LostItem saved = lostItemRepository.save(lostItem);
 
-        // Ensure guestName is set in the response
+        // Auto-match: check against existing found items
+        List<FoundItem> foundItems = foundItemRepository.findByStatus(FoundItem.Status.UNCLAIMED);
+        for (FoundItem found : foundItems) {
+            if (isMatch(saved, found)) {
+                MatchRecord record = MatchRecord.builder()
+                        .lostItem(saved)
+                        .foundItem(found)
+                        .build();
+                matchRecordRepository.save(record);
+
+                saved.setStatus(LostItem.Status.MATCHED);
+                found.setStatus(FoundItem.Status.MATCHED);
+
+                lostItemRepository.save(saved);
+                foundItemRepository.save(found);
+
+                notificationService.sendNotification(saved.getGuest(),
+                        "We may have found your item: " + found.getTitle());
+            }
+        }
+
         LostItemResponseDTO dto = modelMapper.map(saved, LostItemResponseDTO.class);
         dto.setGuestName(saved.getGuest().getName());
         return dto;
     }
+
+    private boolean isMatch(LostItem lost, FoundItem found) {
+        // Simple keyword-based match
+        String lostTitle = lost.getTitle().toLowerCase();
+        String foundTitle = found.getTitle().toLowerCase();
+
+        // exact match OR one contains the other
+        if (lostTitle.equals(foundTitle)) return true;
+        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
+
+        // you can also add description-based check
+        String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
+        String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
+
+        return !lostDesc.isEmpty() && !foundDesc.isEmpty() && lostDesc.contains(foundDesc);
+    }
+
+
 
     @Override
     public LostItemResponseDTO getLostItemById(Long id) {
