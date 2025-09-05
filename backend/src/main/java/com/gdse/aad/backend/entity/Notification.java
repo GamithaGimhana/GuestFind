@@ -33,6 +33,9 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private Type type;
 
+    @Column(nullable = false)
+    private boolean read = false;
+
     public enum Type {
         EMAIL, SMS
     }

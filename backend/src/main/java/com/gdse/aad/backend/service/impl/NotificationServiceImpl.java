@@ -1,18 +1,24 @@
 package com.gdse.aad.backend.service.impl;
 
+import com.gdse.aad.backend.dto.NotificationResponseDTO;
 import com.gdse.aad.backend.entity.Guest;
 import com.gdse.aad.backend.entity.Notification;
+import com.gdse.aad.backend.exception.ResourceNotFoundException;
 import com.gdse.aad.backend.repository.NotificationRepository;
 import com.gdse.aad.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final ModelMapper modelMapper;
 //    private final JavaMailSender mailSender;
 
     @Override
@@ -23,14 +29,32 @@ public class NotificationServiceImpl implements NotificationService {
                 .guest(guest)
                 .message(message)
                 .type(Notification.Type.EMAIL)
+                .read(false)
                 .build();
         notificationRepository.save(n);
 
-        // Send email
+        // Send email (optional)
 //        SimpleMailMessage mail = new SimpleMailMessage();
 //        mail.setTo(guest.getEmail());
 //        mail.setSubject("GuestFind Notification");
 //        mail.setText(message);
 //        mailSender.send(mail);
+    }
+
+    @Override
+    public List<NotificationResponseDTO> getNotificationsForGuest(Long guestId) {
+        List<Notification> notifications = notificationRepository.findByGuest_GuestId(guestId);
+        return notifications.stream()
+                .map(n -> modelMapper.map(n, NotificationResponseDTO.class))
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public void markAsRead(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: " + notificationId));
+        notification.setRead(true);
+        notificationRepository.save(notification);
     }
 }
