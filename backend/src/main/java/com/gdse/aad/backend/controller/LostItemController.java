@@ -28,7 +28,7 @@ public class LostItemController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<ApiResponseDTO> getAllLostItems() {
         return ResponseEntity.ok(new ApiResponseDTO(200, "OK", lostItemService.getAllLostItems()));
     }

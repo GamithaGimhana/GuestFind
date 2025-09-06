@@ -16,7 +16,7 @@ public class FoundItemController {
     private final FoundItemService foundItemService;
 
     @PostMapping
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<ApiResponseDTO> createFoundItem(@RequestBody FoundItemRequestDTO dto) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Created", foundItemService.createFoundItem(dto))
@@ -24,7 +24,7 @@ public class FoundItemController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF','Guest')")
     public ResponseEntity<ApiResponseDTO> getAllFoundItems() {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "OK", foundItemService.getAllFoundItems())

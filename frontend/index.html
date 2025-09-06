@@ -2,9 +2,1351 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GuestFind</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuestFind - Smart Lost & Found System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #1a472a;
+            --primary: #2e593c;
+            --primary-light: #3d6b4f;
+            --accent-gold: #c8a971;
+            --accent-gold-light: #d4b98a;
+            --neutral-dark: #2c2c2c;
+            --neutral: #3c3c3c;
+            --neutral-light: #4f4f4f;
+            --text-light: #f5f5f5;
+            --text-gray: #d1d1d1;
+            --background: #f9f7f2;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--neutral-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-dark);
+        }
+
+        .navbar-brand {
+            color: var(--accent-gold) !important;
+            font-weight: 600;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light) !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-gold) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-gold-light);
+            border-color: var(--accent-gold-light);
+            color: var(--primary-dark);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--accent-gold);
+            color: var(--primary-dark);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(26, 71, 42, 0.9), rgba(26, 71, 42, 0.8)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-light);
+            padding: 5rem 0;
+        }
+
+        .feature-card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-matched {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-closed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-unclaimed {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .dashboard-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-gold);
+        }
+
+        .card-title {
+            color: var(--primary);
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 0.25rem rgba(200, 169, 113, 0.25);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-key me-2"></i>GuestFind
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#howItWorksModal">How It Works</a>
+                </li>
+            </ul>
+            <div class="d-flex" id="authButtons">
+                <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+            </div>
+            <div class="d-none" id="userMenu">
+                <div class="dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle position-relative" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i> <span id="username">User</span>
+                        <span class="notification-badge d-none" id="notificationsBadge">0</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">Notifications</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
 
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">Smart Lost & Found System for Hotels</h1>
+        <p class="lead mb-4">Streamline communication between hotels and guests for lost items with our sophisticated tracking and matching system.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#reportModal">Report Lost Item</button>
+            <button class="btn btn-outline-light btn-lg" data-bs-toggle="modal" data-bs-target="#foundModal">Report Found Item</button>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center section-title mb-5">How GuestFind Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="card-title">Report Items</h3>
+                        <p class="card-text">Guests can easily report lost items with detailed descriptions and images for better identification.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3 class="card-title">Get Notified</h3>
+                        <p class="card-text">Receive instant notifications via email or SMS when your lost item is found or matched.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <h3 class="card-title">Delivery Options</h3>
+                        <p class="card-text">Choose to pick up your item in person or request delivery to your address.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Section (Initially Hidden) -->
+<section class="py-5 d-none" id="dashboardSection">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title" id="dashboardTitle">Dashboard</h2>
+            <div>
+                <button class="btn btn-primary me-2 d-none" id="addItemBtn" data-bs-toggle="modal" data-bs-target="#foundModal">Add Found Item</button>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reportModal">Report Lost Item</button>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4" id="statsSection">
+            <!-- Stats will be loaded here dynamically -->
+        </div>
+
+        <div class="dashboard-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Lost Items</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover" id="lostItemsTable">
+                    <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Guest</th>
+                        <th>Date Reported</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Lost items will be loaded here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Found Items</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover" id="foundItemsTable">
+                    <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Found By</th>
+                        <th>Date Found</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Found items will be loaded here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-section d-none" id="adminSection">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>System Management</h3>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Hotel Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Manage hotels in the system</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageHotelsModal">Manage Hotels</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Staff Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Manage staff accounts</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageStaffModal">Manage Staff</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <h5 class="text-warning">About GuestFind</h5>
+                <p>GuestFind is a sophisticated lost and found system designed specifically for hotels and their guests, streamlining the process of reporting, matching, and returning lost items.</p>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <h5 class="text-warning">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-light text-decoration-none">Home</a></li>
+                    <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#howItWorksModal">How It Works</a></li>
+                    <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#reportModal">Report Lost Item</a></li>
+                    <li><a href="#" class="text-light text-decoration-none" data-bs-toggle="modal" data-bs-target="#foundModal">Report Found Item</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <h5 class="text-warning">Contact Information</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 159/2c Kurunduwatta, Meegoda, Sri Lanka</li>
+                    <li><i class="fas fa-phone me-2"></i> +94 11 275 0429</li>
+                    <li><i class="fas fa-envelope me-2"></i> support@guestfind.com</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="bg-light">
+        <div class="text-center">
+            <p class="mb-0">&copy; 2025 GuestFind. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Modals -->
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login to Your Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="userTypeCheck">
+                        <label class="form-check-label" for="userTypeCheck">I am a hotel staff member</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Register</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create an Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label for="registerName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="registerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="registerEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPhone" class="form-label">Phone Number (Optional)</label>
+                        <input type="tel" class="form-control" id="registerPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="staffRegisterCheck">
+                        <label class="form-check-label" for="staffRegisterCheck">I am a hotel staff member</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Lost Item Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Report a Lost Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm">
+                    <div class="mb-3">
+                        <label for="itemName" class="form-label">Item Name</label>
+                        <input type="text" class="form-control" id="itemName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="itemDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lostDate" class="form-label">Date Lost</label>
+                        <input type="date" class="form-control" id="lostDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lostLocation" class="form-label">Location Lost</label>
+                        <input type="text" class="form-control" id="lostLocation" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemImage" class="form-label">Upload Image (Optional)</label>
+                        <input type="file" class="form-control" id="itemImage">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Found Item Modal -->
+<div class="modal fade" id="foundModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Report a Found Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="foundForm">
+                    <div class="mb-3">
+                        <label for="foundItemName" class="form-label">Item Name</label>
+                        <input type="text" class="form-control" id="foundItemName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="foundItemDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="foundItemDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="foundDate" class="form-label">Date Found</label>
+                        <input type="date" class="form-control" id="foundDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="foundLocation" class="form-label">Location Found</label>
+                        <input type="text" class="form-control" id="foundLocation" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="foundItemImage" class="form-label">Upload Image (Optional)</label>
+                        <input type="file" class="form-control" id="foundItemImage">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Found Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal fade" id="notificationsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Your Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="notificationsList">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Modal -->
+<div class="modal fade" id="howItWorksModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">How GuestFind Works</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>For Guests</h4>
+                        <ol>
+                            <li>Report lost items with detailed descriptions</li>
+                            <li>Upload images for better identification</li>
+                            <li>Get notified when your item is found</li>
+                            <li>Track item status via email/SMS</li>
+                            <li>Choose to collect in person or request delivery</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>For Hotel Staff</h4>
+                        <ol>
+                            <li>Login to manage found item inventory</li>
+                            <li>Add item details with images</li>
+                            <li>Search guest reports and match found items</li>
+                            <li>Notify guests with update links</li>
+                            <li>Track unclaimed items and decide actions</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Base URL for API - adjust according to your backend
+    const API_BASE_URL = 'http://localhost:8080';
+    let currentUser = null;
+    let jwtToken = null;
+
+    // Check if user is already logged in
+    $(document).ready(function() {
+        const savedToken = localStorage.getItem('jwtToken');
+        const savedUser = localStorage.getItem('currentUser');
+
+        if (savedToken && savedUser) {
+            jwtToken = savedToken;
+            currentUser = JSON.parse(savedUser);
+            updateUIAfterLogin();
+            loadDashboardData();
+        }
+
+        // Login form submission
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+            loginUser();
+        });
+
+        // Register form submission
+        $('#registerForm').on('submit', function(e) {
+            e.preventDefault();
+            registerUser();
+        });
+
+        // Report form submission
+        $('#reportForm').on('submit', function(e) {
+            e.preventDefault();
+            reportLostItem();
+        });
+
+        // Found item form submission
+        $('#foundForm').on('submit', function(e) {
+            e.preventDefault();
+            reportFoundItem();
+        });
+
+        // Logout button
+        $('#logoutBtn').on('click', function(e) {
+            e.preventDefault();
+            logoutUser();
+        });
+
+        // Notifications modal
+        $('#notificationsModal').on('show.bs.modal', function() {
+            loadNotifications();
+        });
+    });
+
+    // Login function
+    function loginUser() {
+        const email = $('#loginEmail').val();
+        const password = $('#loginPassword').val();
+        const isStaff = $('#userTypeCheck').is(':checked');
+
+        const endpoint = isStaff ? '/auth/login' : '/auth/guest/login';
+        const credentials = isStaff ?
+            { username: email, password: password } :
+            { email: email, password: password };
+
+        $.ajax({
+            url: API_BASE_URL + endpoint,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(credentials),
+            success: function(response) {
+                if (response.status === 200) {
+                    jwtToken = response.data.token;
+                    currentUser = response.data.user;
+
+                    // Store in localStorage
+                    localStorage.setItem('jwtToken', jwtToken);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                    // Update UI
+                    updateUIAfterLogin();
+                    loadDashboardData();
+
+                    // Close modal
+                    $('#loginModal').modal('hide');
+
+                    // Show success message
+                    alert('Login successful!');
+                }
+            },
+            error: function(xhr) {
+                alert('Login failed: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    }
+
+    // Register function
+    function registerUser() {
+        const name = $('#registerName').val();
+        const email = $('#registerEmail').val();
+        const phone = $('#registerPhone').val();
+        const password = $('#registerPassword').val();
+        const isStaff = $('#staffRegisterCheck').is(':checked');
+
+        if (isStaff) {
+            alert('Staff registration must be done by an administrator.');
+            return;
+        }
+
+        const userData = {
+            name: name,
+            email: email,
+            phone: phone || '',
+            password: password
+        };
+
+        $.ajax({
+            url: API_BASE_URL + '/auth/guest/register',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userData),
+            success: function(response) {
+                if (response.status === 200) {
+                    alert('Registration successful! Please login.');
+                    $('#registerModal').modal('hide');
+                    $('#loginModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                alert('Registration failed: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    }
+
+    // Report lost item
+    function reportLostItem() {
+        if (!currentUser || !jwtToken) {
+            alert('Please login first to report a lost item.');
+            $('#reportModal').modal('hide');
+            $('#loginModal').modal('show');
+            return;
+        }
+
+        // Guests can report lost items
+        if (currentUser.role && currentUser.role !== 'GUEST') {
+            alert('Only guests can report lost items. Staff should use the "Report Found Item" feature.');
+            $('#reportModal').modal('hide');
+            return;
+        }
+
+        const itemData = {
+            guestId: currentUser.guestId || currentUser.id,
+            title: $('#itemName').val(),
+            description: $('#itemDescription').val(),
+            dateLost: $('#lostDate').val(),
+            locationLost: $('#lostLocation').val(),
+            imagePath: '' // You would handle file upload separately
+        };
+
+        $.ajax({
+            url: API_BASE_URL + '/lost-items',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(itemData),
+            success: function(response) {
+                if (response.status === 200) {
+                    alert('Item reported successfully!');
+                    $('#reportModal').modal('hide');
+                    loadDashboardData(); // Refresh data
+                }
+            },
+            error: function(xhr) {
+                alert('Failed to report item: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    }
+
+    // Report found item
+    function reportFoundItem() {
+        if (!currentUser || !jwtToken) {
+            alert('Please login first to report a found item.');
+            $('#foundModal').modal('hide');
+            $('#loginModal').modal('show');
+            return;
+        }
+
+        // Only staff can report found items
+        if (!currentUser.role || currentUser.role === 'GUEST') {
+            alert('Only hotel staff can report found items.');
+            $('#foundModal').modal('hide');
+            return;
+        }
+
+        const itemData = {
+            staffId: currentUser.staffId || currentUser.id,
+            title: $('#foundItemName').val(),
+            description: $('#foundItemDescription').val(),
+            foundDate: $('#foundDate').val(),
+            locationFound: $('#foundLocation').val(),
+            imagePath: '' // You would handle file upload separately
+        };
+
+        $.ajax({
+            url: API_BASE_URL + '/found-items',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(itemData),
+            success: function(response) {
+                if (response.status === 200) {
+                    alert('Found item reported successfully!');
+                    $('#foundModal').modal('hide');
+                    loadDashboardData(); // Refresh data
+                }
+            },
+            error: function(xhr) {
+                alert('Failed to report found item: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    }
+
+    // Load dashboard data based on user role
+    function loadDashboardData() {
+        if (!currentUser || !jwtToken) return;
+
+        // Update dashboard title based on user role
+        if (currentUser.role === 'ADMIN') {
+            $('#dashboardTitle').text('Admin Dashboard');
+            $('#adminSection').removeClass('d-none');
+            $('#addItemBtn').removeClass('d-none');
+            loadAdminData();
+        } else if (currentUser.role === 'STAFF') {
+            $('#dashboardTitle').text('Staff Dashboard');
+            $('#adminSection').addClass('d-none');
+            $('#addItemBtn').removeClass('d-none');
+            loadStaffData();
+        } else {
+            $('#dashboardTitle').text('My Dashboard');
+            $('#adminSection').addClass('d-none');
+            $('#addItemBtn').addClass('d-none');
+            loadGuestData();
+        }
+    }
+
+    // Load data for admin users
+    function loadAdminData() {
+        // Load lost items (admin can see all)
+        $.ajax({
+            url: API_BASE_URL + '/lost-items',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateLostItemsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load lost items:', xhr);
+                showError('Failed to load lost items');
+            }
+        });
+
+        // Load found items (admin can see all)
+        $.ajax({
+            url: API_BASE_URL + '/found-items',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateFoundItemsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load found items:', xhr);
+                showError('Failed to load found items');
+            }
+        });
+
+        // Load stats
+        loadAdminStats();
+
+        // Load guests (admin only)
+        $.ajax({
+            url: API_BASE_URL + '/guests',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    // You could display guests in the admin section
+                    console.log('Guests loaded:', response.data.length);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load guests:', xhr);
+            }
+        });
+    }
+
+    // Load data for staff users
+    function loadStaffData() {
+        // Load lost items (staff can see all)
+        $.ajax({
+            url: API_BASE_URL + '/lost-items',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateLostItemsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load lost items:', xhr);
+                showError('Failed to load lost items');
+            }
+        });
+
+        // Load found items (staff can see all)
+        $.ajax({
+            url: API_BASE_URL + '/found-items',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateFoundItemsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load found items:', xhr);
+                showError('Failed to load found items');
+            }
+        });
+
+        // Load staff stats
+        loadStaffStats();
+    }
+
+    // Load data for guest users
+    function loadGuestData() {
+        // Load guest's lost items
+        // Since your API doesn't have a specific endpoint for guest items,
+        // we need to get all items and filter on the client side
+        $.ajax({
+            url: API_BASE_URL + '/lost-items',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    // For guests, we need to filter by their ID
+                    const guestItems = response.data.filter(item => {
+                        // Check if the item belongs to the current guest
+                        return item.guestId === currentUser.guestId ||
+                            (item.guest && item.guest.guestId === currentUser.guestId) ||
+                            (currentUser.id && item.guestId === currentUser.id);
+                    });
+                    populateLostItemsTable(guestItems);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load lost items:', xhr);
+                showError('Failed to load your lost items');
+            }
+        });
+
+        // Load found items that might match guest's lost items
+        // Guests can see all found items to check if their item is there
+        $.ajax({
+            url: API_BASE_URL + '/found-items',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateFoundItemsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load found items:', xhr);
+            }
+        });
+
+        // Load notifications for guest
+        if (currentUser.guestId) {
+            loadNotifications();
+        }
+
+        // Load guest stats
+        loadGuestStats();
+    }
+
+    // Load notifications for the current user
+    function loadNotifications() {
+        if (!currentUser || !currentUser.guestId) return;
+
+        $.ajax({
+            url: API_BASE_URL + '/notifications/guest/' + currentUser.guestId,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    const notifications = response.data;
+
+                    // Update notification badge
+                    if (notifications && notifications.length > 0) {
+                        $('#notificationsBadge').removeClass('d-none').text(notifications.length);
+                    } else {
+                        $('#notificationsBadge').addClass('d-none');
+                    }
+
+                    // Populate notifications modal if it's open
+                    if ($('#notificationsModal').hasClass('show')) {
+                        const notificationsList = $('#notificationsList');
+                        notificationsList.empty();
+
+                        if (notifications.length === 0) {
+                            notificationsList.html('<p class="text-center">No notifications</p>');
+                            return;
+                        }
+
+                        notifications.forEach(notification => {
+                            const notificationItem = `
+                                    <div class="card mb-2 ${notification.isRead ? '' : 'border-primary'}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${notification.type || 'Notification'}</h5>
+                                            <p class="card-text">${notification.message}</p>
+                                            <small class="text-muted">${formatDate(notification.sentDate)}</small>
+                                            ${!notification.isRead ? `
+                                            <button class="btn btn-sm btn-primary mark-as-read" data-id="${notification.id}">Mark as Read</button>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            notificationsList.append(notificationItem);
+                        });
+
+                        // Add event listeners for mark as read buttons
+                        $('.mark-as-read').on('click', function() {
+                            const notificationId = $(this).data('id');
+                            markNotificationAsRead(notificationId);
+                        });
+                    }
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load notifications:', xhr);
+            }
+        });
+    }
+
+    // Mark notification as read
+    function markNotificationAsRead(notificationId) {
+        $.ajax({
+            url: API_BASE_URL + '/notifications/' + notificationId + '/read',
+            type: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    // Reload notifications
+                    loadNotifications();
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to mark notification as read:', xhr);
+            }
+        });
+    }
+
+    // Load admin statistics
+    function loadAdminStats() {
+        // In a real app, you would have an endpoint for stats
+        // For now, we'll use mock data or count from existing data
+        const statsHtml = `
+                <div class="col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="lostItemsCount">0</div>
+                        <div class="stat-label">Lost Items</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="foundItemsCount">0</div>
+                        <div class="stat-label">Found Items</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="matchedItemsCount">0</div>
+                        <div class="stat-label">Matched Items</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="guestsCount">0</div>
+                        <div class="stat-label">Registered Guests</div>
+                    </div>
+                </div>
+            `;
+
+        $('#statsSection').html(statsHtml);
+
+        // You would make API calls to get actual counts
+        // For now, we'll set some placeholder values
+        setTimeout(() => {
+            $('#lostItemsCount').text('24');
+            $('#foundItemsCount').text('18');
+            $('#matchedItemsCount').text('12');
+            $('#guestsCount').text('56');
+        }, 500);
+    }
+
+    // Load staff statistics
+    function loadStaffStats() {
+        const statsHtml = `
+                <div class="col-md-4">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="staffLostItemsCount">0</div>
+                        <div class="stat-label">Lost Items</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="staffFoundItemsCount">0</div>
+                        <div class="stat-label">Found Items</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="staffMatchedItemsCount">0</div>
+                        <div class="stat-label">Matched Items</div>
+                    </div>
+                </div>
+            `;
+
+        $('#statsSection').html(statsHtml);
+
+        // You would make API calls to get actual counts
+        // For now, we'll set some placeholder values
+        setTimeout(() => {
+            $('#staffLostItemsCount').text('14');
+            $('#staffFoundItemsCount').text('8');
+            $('#staffMatchedItemsCount').text('5');
+        }, 500);
+    }
+
+    // Load guest statistics
+    function loadGuestStats() {
+        const statsHtml = `
+                <div class="col-md-6">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="guestLostItemsCount">0</div>
+                        <div class="stat-label">Your Lost Items</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stat-card text-center p-3">
+                        <div class="stat-number" id="guestMatchedItemsCount">0</div>
+                        <div class="stat-label">Matched Items</div>
+                    </div>
+                </div>
+            `;
+
+        $('#statsSection').html(statsHtml);
+
+        // You would make API calls to get actual counts
+        // For now, we'll set some placeholder values
+        setTimeout(() => {
+            $('#guestLostItemsCount').text('3');
+            $('#guestMatchedItemsCount').text('1');
+        }, 500);
+    }
+
+    // Populate lost items table
+    function populateLostItemsTable(items) {
+        const tbody = $('#lostItemsTable tbody');
+        tbody.empty();
+
+        if (!items || items.length === 0) {
+            tbody.append('<tr><td colspan="5" class="text-center">No lost items found</td></tr>');
+            return;
+        }
+
+        items.forEach(item => {
+            const statusClass = getStatusClass(item.status);
+            const row = `
+                    <tr>
+                        <td>${item.title || 'Unknown Item'}</td>
+                        <td>${item.guestName || (item.guest && item.guest.name) || 'Unknown Guest'}</td>
+                        <td>${formatDate(item.reportedDate) || 'N/A'}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status || 'UNKNOWN'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary view-item" data-id="${item.lostId}">View</button>
+                            ${currentUser.role === 'GUEST' ? `
+                            <button class="btn btn-sm btn-outline-secondary edit-item" data-id="${item.lostId}">Edit</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            tbody.append(row);
+        });
+    }
+
+    // Populate found items table
+    function populateFoundItemsTable(items) {
+        const tbody = $('#foundItemsTable tbody');
+        tbody.empty();
+
+        if (!items || items.length === 0) {
+            tbody.append('<tr><td colspan="5" class="text-center">No found items found</td></tr>');
+            return;
+        }
+
+        items.forEach(item => {
+            const statusClass = getStatusClass(item.status);
+            const row = `
+                    <tr>
+                        <td>${item.title || 'Unknown Item'}</td>
+                        <td>${item.staffName || (item.staff && item.staff.name) || 'Unknown Staff'}</td>
+                        <td>${formatDate(item.foundDate) || 'N/A'}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status || 'UNKNOWN'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary view-item" data-id="${item.foundId}">View</button>
+                            ${(currentUser.role === 'ADMIN' || currentUser.role === 'STAFF') ? `
+                            <button class="btn btn-sm btn-outline-success match-item" data-id="${item.foundId}">Match</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            tbody.append(row);
+        });
+    }
+
+    // Helper function to get CSS class for status
+    function getStatusClass(status) {
+        if (!status) return 'status-unclaimed';
+
+        status = status.toLowerCase();
+        if (status.includes('pending')) return 'status-pending';
+        if (status.includes('match')) return 'status-matched';
+        if (status.includes('close')) return 'status-closed';
+        if (status.includes('unclaim')) return 'status-unclaimed';
+        return 'status-unclaimed';
+    }
+
+    // Helper function to format date
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        } catch (e) {
+            return 'N/A';
+        }
+    }
+
+    // Update UI after login
+    function updateUIAfterLogin() {
+        $('#authButtons').addClass('d-none');
+        $('#userMenu').removeClass('d-none');
+
+        const username = currentUser.name || currentUser.email;
+        $('#username').text(username);
+
+        $('#dashboardSection').removeClass('d-none');
+
+        // Update dashboard link based on role
+        if (currentUser.role === 'ADMIN') {
+            $('#dashboardLink').text('Admin Dashboard');
+        } else if (currentUser.role === 'STAFF') {
+            $('#dashboardLink').text('Staff Dashboard');
+        } else {
+            $('#dashboardLink').text('My Dashboard');
+        }
+    }
+
+    // Logout function
+    function logoutUser() {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('currentUser');
+        jwtToken = null;
+        currentUser = null;
+
+        $('#authButtons').removeClass('d-none');
+        $('#userMenu').addClass('d-none');
+        $('#dashboardSection').addClass('d-none');
+
+        alert('You have been logged out.');
+    }
+
+    // Show error message
+    function showError(message) {
+        // You could implement a better error notification system
+        console.error(message);
+        alert(message);
+    }
+</script>
 </body>
 </html>
