@@ -1,7 +1,6 @@
 package com.gdse.aad.backend;
 
 import com.gdse.aad.backend.dto.GuestDTO;
-import com.gdse.aad.backend.dto.HotelStaffDTO;
 import com.gdse.aad.backend.dto.LostItemRequestDTO;
 import com.gdse.aad.backend.dto.NotificationResponseDTO;
 import com.gdse.aad.backend.entity.*;
@@ -12,7 +11,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication

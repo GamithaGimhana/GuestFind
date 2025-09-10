@@ -7,9 +7,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 public class GuestDTO {
-    private Long guestId;
+    private Long id;
     private String name;
     private String email;
     private String phone;
+    private String password; 
 }
+
