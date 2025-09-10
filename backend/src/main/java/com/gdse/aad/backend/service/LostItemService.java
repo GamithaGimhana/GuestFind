@@ -12,4 +12,7 @@ public interface LostItemService {
     LostItemResponseDTO updateLostItem(Long id, LostItemRequestDTO requestDTO);
     void deleteLostItem(Long id);
     LostItemResponseDTO updateStatus(Long id, String status);
+    List<LostItemResponseDTO> getLostItemsByGuest(String email);
+    void archiveLostItem(Long id);
+
 }

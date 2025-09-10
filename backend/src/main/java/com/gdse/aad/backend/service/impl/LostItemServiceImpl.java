@@ -44,11 +44,12 @@ public class LostItemServiceImpl implements LostItemService {
                 .description(requestDTO.getDescription())
                 .imagePath(requestDTO.getImagePath())
                 .status(LostItem.Status.PENDING)
+                .archived(false)
                 .build();
 
         LostItem saved = lostItemRepository.save(lostItem);
 
-        // Auto-match: check against existing found items
+        // Auto-match with unclaimed found items
         List<FoundItem> foundItems = foundItemRepository.findByStatus(FoundItem.Status.UNCLAIMED);
         for (FoundItem found : foundItems) {
             if (ItemMatcher.isMatch(saved, found)) {
@@ -74,22 +75,6 @@ public class LostItemServiceImpl implements LostItemService {
         return dto;
     }
 
-//    private boolean isMatch(LostItem lost, FoundItem found) {
-//        // Simple keyword-based match
-//        String lostTitle = lost.getTitle().toLowerCase();
-//        String foundTitle = found.getTitle().toLowerCase();
-//
-//        // exact match OR one contains the other
-//        if (lostTitle.equals(foundTitle)) return true;
-//        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
-//
-//        // you can also add description-based check
-//        String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
-//        String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
-//
-//        return !lostDesc.isEmpty() && !foundDesc.isEmpty() && lostDesc.contains(foundDesc);
-//    }
-
     @Override
     public LostItemResponseDTO getLostItemById(Long id) {
         LostItem lostItem = lostItemRepository.findById(id)
@@ -102,8 +87,8 @@ public class LostItemServiceImpl implements LostItemService {
 
     @Override
     public List<LostItemResponseDTO> getAllLostItems() {
-        List<LostItem> items = lostItemRepository.findAll();
-        return items.stream()
+        return lostItemRepository.findByArchivedFalse()
+                .stream()
                 .map(item -> {
                     LostItemResponseDTO dto = modelMapper.map(item, LostItemResponseDTO.class);
                     dto.setGuestName(item.getGuest().getName());
@@ -147,7 +132,7 @@ public class LostItemServiceImpl implements LostItemService {
         try {
             newStatus = LostItem.Status.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Invalid status. Allowed: PENDING, MATCHED, CLOSED");
+            throw new IllegalArgumentException("Invalid status. Allowed: PENDING, MATCHED, FOUND, ARCHIVED");
         }
 
         item.setStatus(newStatus);
@@ -157,4 +142,28 @@ public class LostItemServiceImpl implements LostItemService {
         dto.setGuestName(saved.getGuest().getName());
         return dto;
     }
+
+    @Override
+    public List<LostItemResponseDTO> getLostItemsByGuest(String email) {
+        Guest guest = guestRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Guest not found with email: " + email));
+
+        return lostItemRepository.findByGuest_GuestId(guest.getGuestId())
+                .stream()
+                .filter(item -> !item.isArchived())
+                .map(item -> modelMapper.map(item, LostItemResponseDTO.class))
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public void archiveLostItem(Long id) {
+        LostItem item = lostItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lost item not found with id: " + id));
+
+        item.setArchived(true);
+        item.setStatus(LostItem.Status.ARCHIVED);
+        lostItemRepository.save(item);
+    }
 }
+

@@ -23,7 +23,7 @@ public class LostItem {
     @JoinColumn(name = "guest_id", nullable = false)
     private Guest guest;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 100)
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -32,14 +32,16 @@ public class LostItem {
     private String imagePath;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Status status = Status.PENDING;
+    private Status status;
+
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private boolean archived = false;
 
     public enum Status {
-        PENDING, MATCHED, CLOSED
+        PENDING, MATCHED, FOUND, ARCHIVED
     }
-
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime reportedDate = LocalDateTime.now();
 }

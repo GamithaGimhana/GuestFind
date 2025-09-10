@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface LostItemRepository extends JpaRepository<LostItem, Long> {
     List<LostItem> findByStatus(LostItem.Status status);
+    List<LostItem> findByGuest_GuestId(Long guestId);
+    List<LostItem> findByArchivedFalse();
+
 }

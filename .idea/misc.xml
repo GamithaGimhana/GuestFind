@@ -5,8 +5,9 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/guestfind_backend/pom.xml" />
-        <option value="$PROJECT_DIR$/backend/pom.xml" />
         <option value="$PROJECT_DIR$/GuestFind-BackEnd/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/backend/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

@@ -19,12 +19,15 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="backend (1)" target="1.5" />
+      <module name="GuestFind" target="17" />
       <module name="GuestFind-BackEnd" target="17" />
       <module name="guestfind_backend" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="GuestFind" options="-parameters" />
       <module name="GuestFind-BackEnd" options="-parameters" />
       <module name="backend" options="-parameters" />
       <module name="guestfind_backend" options="-parameters" />
