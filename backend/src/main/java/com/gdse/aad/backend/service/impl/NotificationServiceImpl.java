@@ -43,13 +43,6 @@ public class NotificationServiceImpl implements NotificationService {
 //        mailSender.send(mail);
     }
 
-//    @Override
-//    public List<NotificationResponseDTO> getNotificationsForGuest(Long guestId) {
-//        List<Notification> notifications = notificationRepository.findByGuest_GuestId(guestId);
-//        return notifications.stream()
-//                .map(n -> modelMapper.map(n, NotificationResponseDTO.class))
-//                .toList();
-//    }
     @Override
     public List<NotificationResponseDTO> getNotificationsForGuest(Long guestId) {
         guestRepository.findById(guestId)
@@ -70,4 +63,24 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setRead(true);
         notificationRepository.save(notification);
     }
+
+    @Override
+    public List<NotificationResponseDTO> getNotificationsForGuestEmail(String email) {
+        Guest guest = guestRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Guest not found with email: " + email));
+
+        return notificationRepository.findByGuest_GuestId(guest.getGuestId())
+                .stream()
+                .map(n -> modelMapper.map(n, NotificationResponseDTO.class))
+                .toList();
+    }
+
+    @Override
+    public List<NotificationResponseDTO> getAllNotifications() {
+        return notificationRepository.findAll()
+                .stream()
+                .map(n -> modelMapper.map(n, NotificationResponseDTO.class))
+                .toList();
+    }
+
 }

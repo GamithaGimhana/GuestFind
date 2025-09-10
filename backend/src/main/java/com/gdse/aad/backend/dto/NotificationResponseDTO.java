@@ -15,5 +15,4 @@ public class NotificationResponseDTO {
     private String type;
     private boolean isRead;
     private LocalDateTime sentDate;
-
 }
