@@ -23,7 +23,7 @@ public class FoundItem {
     @JoinColumn(name = "staff_id", nullable = false)
     private HotelStaff staff;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 100)
     private String title;
 
     @Column(columnDefinition = "TEXT")
@@ -32,14 +32,19 @@ public class FoundItem {
     private String imagePath;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Status status = Status.UNCLAIMED;
+    private Status status;
+
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private boolean claimed = false;
+
+    @Column(nullable = false)
+    private boolean archived = false;
 
     public enum Status {
-        UNCLAIMED, MATCHED, ARCHIVED
+        UNCLAIMED, CLAIMED, MATCHED, ARCHIVED
     }
-
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime foundDate = LocalDateTime.now();
 }

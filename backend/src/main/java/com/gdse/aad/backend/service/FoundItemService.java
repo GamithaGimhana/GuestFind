@@ -8,4 +8,7 @@ import java.util.List;
 public interface FoundItemService {
     FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto);
     List<FoundItemResponseDTO> getAllFoundItems();
+    List<FoundItemResponseDTO> getUnclaimedFoundItems();
+    void archiveFoundItem(Long id);
+
 }

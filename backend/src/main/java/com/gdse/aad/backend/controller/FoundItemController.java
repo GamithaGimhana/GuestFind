@@ -15,19 +15,39 @@ public class FoundItemController {
 
     private final FoundItemService foundItemService;
 
+    // Guest, Staff, Admin can report found items
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
     public ResponseEntity<ApiResponseDTO> createFoundItem(@RequestBody FoundItemRequestDTO dto) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Created", foundItemService.createFoundItem(dto))
         );
     }
 
+    // Staff & Admin see ALL found items
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','STAFF','Guest')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<ApiResponseDTO> getAllFoundItems() {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "OK", foundItemService.getAllFoundItems())
         );
     }
+
+    // Guests see only unclaimed found items
+    @GetMapping("/unclaimed")
+    @PreAuthorize("hasRole('GUEST')")
+    public ResponseEntity<ApiResponseDTO> getUnclaimedFoundItems() {
+        return ResponseEntity.ok(
+                new ApiResponseDTO(200, "OK", foundItemService.getUnclaimedFoundItems())
+        );
+    }
+
+    // Admin can archive found items
+    @PutMapping("/{id}/archive")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> archiveFoundItem(@PathVariable Long id) {
+        foundItemService.archiveFoundItem(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "Archived", null));
+    }
 }
+

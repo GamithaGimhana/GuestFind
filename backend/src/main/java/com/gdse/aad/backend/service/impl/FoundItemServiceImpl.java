@@ -44,11 +44,13 @@ public class FoundItemServiceImpl implements FoundItemService {
                 .description(dto.getDescription())
                 .imagePath(dto.getImagePath())
                 .status(FoundItem.Status.UNCLAIMED)
+                .claimed(false)
+                .archived(false)
                 .build();
 
         FoundItem saved = foundItemRepository.save(foundItem);
 
-        // Auto-match logic with keyword matching
+        // Auto-match logic
         List<LostItem> lostItems = lostItemRepository.findByStatus(LostItem.Status.PENDING);
         for (LostItem lost : lostItems) {
             if (ItemMatcher.isMatch(lost, saved)) {
@@ -74,24 +76,9 @@ public class FoundItemServiceImpl implements FoundItemService {
         return dtoResp;
     }
 
-//    private boolean isMatch(LostItem lost, FoundItem found) {
-//        String lostTitle = lost.getTitle().toLowerCase();
-//        String foundTitle = found.getTitle().toLowerCase();
-//
-//        // exact match OR one contains the other
-//        if (lostTitle.equals(foundTitle)) return true;
-//        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
-//
-//        // description-based check
-//        String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
-//        String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
-//
-//        return !lostDesc.isEmpty() && !foundDesc.isEmpty() && lostDesc.contains(foundDesc);
-//    }
-
     @Override
     public List<FoundItemResponseDTO> getAllFoundItems() {
-        return foundItemRepository.findAll()
+        return foundItemRepository.findByArchivedFalse()
                 .stream()
                 .map(item -> {
                     FoundItemResponseDTO dto = modelMapper.map(item, FoundItemResponseDTO.class);
@@ -100,4 +87,25 @@ public class FoundItemServiceImpl implements FoundItemService {
                 })
                 .toList();
     }
+
+    @Override
+    public List<FoundItemResponseDTO> getUnclaimedFoundItems() {
+        return foundItemRepository.findByClaimedFalse()
+                .stream()
+                .filter(item -> !item.isArchived())
+                .map(item -> modelMapper.map(item, FoundItemResponseDTO.class))
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public void archiveFoundItem(Long id) {
+        FoundItem item = foundItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Found item not found with id: " + id));
+
+        item.setArchived(true);
+        item.setStatus(FoundItem.Status.ARCHIVED);
+        foundItemRepository.save(item);
+    }
 }
+
