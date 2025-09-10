@@ -1,6 +1,5 @@
 package com.gdse.aad.backend.service.impl;
 
-import com.gdse.aad.backend.entity.HotelStaff;
 import com.gdse.aad.backend.repository.GuestRepository;
 import com.gdse.aad.backend.repository.HotelStaffRepository;
 import lombok.RequiredArgsConstructor;

@@ -11,8 +11,4 @@ public class AuthResponseDTO {
     private String token;
     private Object user; // Can be GuestDTO or StaffProfileDTO
 
-    public AuthResponseDTO(String token) {
-        this.token = token;
-        this.user = null;
-    }
 }

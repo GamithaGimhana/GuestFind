@@ -5,8 +5,10 @@ import lombok.Data;
 @Data
 public class RegisterDTO {
     private String name;
-    private String username; // email
+    private String email;
+    private String phone;
     private String password;
     private String role;     // "STAFF" or "ADMIN"
-    private Long hotelId;    // which hotel this staff belongs to
+    private Long hotelId;
+
 }

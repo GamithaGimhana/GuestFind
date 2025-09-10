@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
-        var staff = hotelStaffRepository.findByEmail(authDTO.getUsername())
+        var staff = hotelStaffRepository.findByEmail(authDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(authDTO.getPassword(), staff.getPasswordHash())) {
@@ -36,13 +36,22 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtUtil.generateToken(staff.getEmail(), staff.getRole().name());
-        StaffProfileDTO staffProfileDTO = new StaffProfileDTO(staff.getStaffId(), staff.getName(), staff.getEmail(), staff.getRole().name(), staff.getHotel().getName());
-        return new AuthResponseDTO(token, staffProfileDTO);
+
+        HotelStaffDTO staffDTO = HotelStaffDTO.builder()
+                .staffId(staff.getStaffId())
+                .name(staff.getName())
+                .email(staff.getEmail())
+                .phone(staff.getPhone())
+                .role(staff.getRole().name())
+                .hotelId(staff.getHotel().getHotelId())
+                .build();
+
+        return new AuthResponseDTO(token, staffDTO);
     }
 
     @Override
     public String register(RegisterDTO dto) {
-        hotelStaffRepository.findByEmail(dto.getUsername()).ifPresent(u -> {
+        hotelStaffRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
             throw new RuntimeException("Username already exists");
         });
 
@@ -51,7 +60,8 @@ public class AuthServiceImpl implements AuthService {
 
         HotelStaff staff = HotelStaff.builder()
                 .name(dto.getName())
-                .email(dto.getUsername())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
                 .passwordHash(passwordEncoder.encode(dto.getPassword()))
                 .role(HotelStaff.Role.valueOf(dto.getRole()))
                 .hotel(hotel)
@@ -62,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponseDTO guestAuthenticate(GuestLoginDTO authDTO) {
+    public AuthResponseDTO guestAuthenticate(AuthDTO authDTO) {
         var guest = guestRepository.findByEmail(authDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Guest not found"));
 
@@ -71,7 +81,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtUtil.generateToken(guest.getEmail(), "GUEST");
-        GuestDTO guestDTO = new GuestDTO(guest.getGuestId(), guest.getName(), guest.getEmail(), guest.getPhone());
+
+        GuestDTO guestDTO = GuestDTO.builder()
+                .id(guest.getGuestId())
+                .name(guest.getName())
+                .email(guest.getEmail())
+                .phone(guest.getPhone())
+                .build();
+
         return new AuthResponseDTO(token, guestDTO);
     }
 
@@ -91,5 +108,5 @@ public class AuthServiceImpl implements AuthService {
         guestRepository.save(guest);
         return "Guest registered successfully";
     }
-
 }
+
