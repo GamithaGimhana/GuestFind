@@ -2,11 +2,7 @@ package com.gdse.aad.backend.controller;
 
 import com.gdse.aad.backend.dto.ApiResponseDTO;
 import com.gdse.aad.backend.dto.HotelDTO;
-import com.gdse.aad.backend.dto.StaffProfileDTO;
-import com.gdse.aad.backend.entity.Hotel;
-import com.gdse.aad.backend.repository.HotelRepository;
 import com.gdse.aad.backend.service.HotelService;
-import com.gdse.aad.backend.service.HotelStaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

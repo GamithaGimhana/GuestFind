@@ -1,9 +1,6 @@
 package com.gdse.aad.backend.service.impl;
 
-import com.gdse.aad.backend.dto.GuestDTO;
 import com.gdse.aad.backend.dto.HotelDTO;
-import com.gdse.aad.backend.dto.StaffProfileDTO;
-import com.gdse.aad.backend.entity.Guest;
 import com.gdse.aad.backend.entity.Hotel;
 import com.gdse.aad.backend.repository.HotelRepository;
 import com.gdse.aad.backend.service.HotelService;
