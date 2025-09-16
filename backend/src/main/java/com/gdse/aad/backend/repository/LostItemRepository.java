@@ -9,5 +9,8 @@ public interface LostItemRepository extends JpaRepository<LostItem, Long> {
     List<LostItem> findByStatus(LostItem.Status status);
     List<LostItem> findByGuest_GuestId(Long guestId);
     List<LostItem> findByArchivedFalse();
+    long countByStatus(String status);
+    long countByGuestEmail(String email);
+    long countByGuestEmailAndStatus(String email, String status);
 
 }
