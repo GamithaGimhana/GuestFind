@@ -1197,7 +1197,7 @@
 
         const endpoint = isStaff ? '/auth/login' : '/auth/guest/login';
         const credentials = isStaff ?
-            { username: email, password: password } :
+            { email: email, password: password } :
             { email: email, password: password };
 
         $.ajax({
@@ -1609,7 +1609,7 @@
     function loadGuestData() {
         // Load guest's lost items
         $.ajax({
-            url: API_BASE_URL + '/lost-items',
+            url: API_BASE_URL + '/lost-items/me',
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
@@ -1633,9 +1633,9 @@
         });
 
         // Load found items that might match guest's lost items
-        // Guests can see all found items to check if their item is there
+        // Guests can see all unclaimed found items to check if their item is there
         $.ajax({
-            url: API_BASE_URL + '/found-items',
+            url: API_BASE_URL + '/found-items/unclaimed',
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
@@ -1673,7 +1673,8 @@
         $('#notificationsLoading').removeClass('d-none');
 
         $.ajax({
-            url: API_BASE_URL + '/notifications/guest/' + currentUser.guestId,
+            // url: API_BASE_URL + '/notifications/guest/' + currentUser.guestId,
+            url: API_BASE_URL + '/notifications/me',
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
@@ -2097,107 +2098,234 @@
         });
     }
 
-    // Load admin statistics
+    // // Load admin statistics
+    // function loadAdminStats() {
+    //     const statsHtml = `
+    //         <div class="col-md-3">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="lostItemsCount">0</div>
+    //                 <div class="stat-label">Lost Items</div>
+    //             </div>
+    //         </div>
+    //         <div class="col-md-3">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="foundItemsCount">0</div>
+    //                 <div class="stat-label">Found Items</div>
+    //             </div>
+    //         </div>
+    //         <div class="col-md-3">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="matchedItemsCount">0</div>
+    //                 <div class="stat-label">Matched Items</div>
+    //             </div>
+    //         </div>
+    //         <div class="col-md-3">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="guestsCount">0</div>
+    //                 <div class="stat-label">Registered Guests</div>
+    //             </div>
+    //         </div>
+    //     `;
+    //
+    //     $('#statsSection').html(statsHtml);
+    //
+    //     // You would make API calls to get actual counts
+    //     // For now, we'll set some placeholder values
+    //     setTimeout(() => {
+    //         $('#lostItemsCount').text('24');
+    //         $('#foundItemsCount').text('18');
+    //         $('#matchedItemsCount').text('12');
+    //         $('#guestsCount').text('56');
+    //     }, 500);
+    // }
+    //
+    // // Load staff statistics
+    // function loadStaffStats() {
+    //     const statsHtml = `
+    //         <div class="col-md-4">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="staffLostItemsCount">0</div>
+    //                 <div class="stat-label">Lost Items</div>
+    //             </div>
+    //         </div>
+    //         <div class="col-md-4">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="staffFoundItemsCount">0</div>
+    //                 <div class="stat-label">Found Items</div>
+    //             </div>
+    //         </div>
+    //         <div class="col-md-4">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="staffMatchedItemsCount">0</div>
+    //                 <div class="stat-label">Matched Items</div>
+    //             </div>
+    //         </div>
+    //     `;
+    //
+    //     $('#statsSection').html(statsHtml);
+    //
+    //     // You would make API calls to get actual counts
+    //     // For now, we'll set some placeholder values
+    //     setTimeout(() => {
+    //         $('#staffLostItemsCount').text('14');
+    //         $('#staffFoundItemsCount').text('8');
+    //         $('#staffMatchedItemsCount').text('5');
+    //     }, 500);
+    // }
+    //
+    // // Load guest statistics
+    // function loadGuestStats() {
+    //     const statsHtml = `
+    //         <div class="col-md-6">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="guestLostItemsCount">0</div>
+    //                 <div class="stat-label">Your Lost Items</div>
+    //             </div>
+    //         </div>
+    //         <div class="col-md-6">
+    //             <div class="stat-card text-center p-3">
+    //                 <div class="stat-number" id="guestMatchedItemsCount">0</div>
+    //                 <div class="stat-label">Matched Items</div>
+    //             </div>
+    //         </div>
+    //     `;
+    //
+    //     $('#statsSection').html(statsHtml);
+    //
+    //     // You would make API calls to get actual counts
+    //     // For now, we'll set some placeholder values
+    //     setTimeout(() => {
+    //         $('#guestLostItemsCount').text('3');
+    //         $('#guestMatchedItemsCount').text('1');
+    //     }, 500);
+    // }
+
+    // Load Admin statistics
     function loadAdminStats() {
         const statsHtml = `
-            <div class="col-md-3">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="lostItemsCount">0</div>
-                    <div class="stat-label">Lost Items</div>
-                </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="lostItemsCount">0</div>
+                <div class="stat-label">Lost Items</div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="foundItemsCount">0</div>
-                    <div class="stat-label">Found Items</div>
-                </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="foundItemsCount">0</div>
+                <div class="stat-label">Found Items</div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="matchedItemsCount">0</div>
-                    <div class="stat-label">Matched Items</div>
-                </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="matchedItemsCount">0</div>
+                <div class="stat-label">Matched Items</div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="guestsCount">0</div>
-                    <div class="stat-label">Registered Guests</div>
-                </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="guestsCount">0</div>
+                <div class="stat-label">Registered Guests</div>
             </div>
-        `;
-
+        </div>
+    `;
         $('#statsSection').html(statsHtml);
 
-        // You would make API calls to get actual counts
-        // For now, we'll set some placeholder values
-        setTimeout(() => {
-            $('#lostItemsCount').text('24');
-            $('#foundItemsCount').text('18');
-            $('#matchedItemsCount').text('12');
-            $('#guestsCount').text('56');
-        }, 500);
+        $.ajax({
+            url: API_BASE_URL + '/stats/admin',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (res) {
+                const stats = res.data;
+                $('#lostItemsCount').text(stats.lostItems);
+                $('#foundItemsCount').text(stats.foundItems);
+                $('#matchedItemsCount').text(stats.matchedItems);
+                $('#guestsCount').text(stats.guests);
+            },
+            error: function () {
+                console.error("Failed to load admin stats");
+            }
+        });
     }
 
-    // Load staff statistics
+    // Load Staff statistics
     function loadStaffStats() {
         const statsHtml = `
-            <div class="col-md-4">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="staffLostItemsCount">0</div>
-                    <div class="stat-label">Lost Items</div>
-                </div>
+        <div class="col-md-4">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="staffLostItemsCount">0</div>
+                <div class="stat-label">Lost Items</div>
             </div>
-            <div class="col-md-4">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="staffFoundItemsCount">0</div>
-                    <div class="stat-label">Found Items</div>
-                </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="staffFoundItemsCount">0</div>
+                <div class="stat-label">Found Items</div>
             </div>
-            <div class="col-md-4">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="staffMatchedItemsCount">0</div>
-                    <div class="stat-label">Matched Items</div>
-                </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="staffMatchedItemsCount">0</div>
+                <div class="stat-label">Matched Items</div>
             </div>
-        `;
-
+        </div>
+    `;
         $('#statsSection').html(statsHtml);
 
-        // You would make API calls to get actual counts
-        // For now, we'll set some placeholder values
-        setTimeout(() => {
-            $('#staffLostItemsCount').text('14');
-            $('#staffFoundItemsCount').text('8');
-            $('#staffMatchedItemsCount').text('5');
-        }, 500);
+        $.ajax({
+            url: API_BASE_URL + '/stats/staff',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (res) {
+                const stats = res.data;
+                $('#staffLostItemsCount').text(stats.lostItems);
+                $('#staffFoundItemsCount').text(stats.foundItems);
+                $('#staffMatchedItemsCount').text(stats.matchedItems);
+            },
+            error: function () {
+                console.error("Failed to load staff stats");
+            }
+        });
     }
 
-    // Load guest statistics
+    // Load Guest statistics
     function loadGuestStats() {
         const statsHtml = `
-            <div class="col-md-6">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="guestLostItemsCount">0</div>
-                    <div class="stat-label">Your Lost Items</div>
-                </div>
+        <div class="col-md-6">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="guestLostItemsCount">0</div>
+                <div class="stat-label">Your Lost Items</div>
             </div>
-            <div class="col-md-6">
-                <div class="stat-card text-center p-3">
-                    <div class="stat-number" id="guestMatchedItemsCount">0</div>
-                    <div class="stat-label">Matched Items</div>
-                </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card text-center p-3">
+                <div class="stat-number" id="guestMatchedItemsCount">0</div>
+                <div class="stat-label">Matched Items</div>
             </div>
-        `;
-
+        </div>
+    `;
         $('#statsSection').html(statsHtml);
 
-        // You would make API calls to get actual counts
-        // For now, we'll set some placeholder values
-        setTimeout(() => {
-            $('#guestLostItemsCount').text('3');
-            $('#guestMatchedItemsCount').text('1');
-        }, 500);
+        $.ajax({
+            url: API_BASE_URL + '/stats/guest',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (res) {
+                const stats = res.data;
+                $('#guestLostItemsCount').text(stats.lostItems);
+                $('#guestMatchedItemsCount').text(stats.matchedItems);
+            },
+            error: function () {
+                console.error("Failed to load guest stats");
+            }
+        });
     }
+
 </script>
 </body>
 </html>
