@@ -2,6 +2,8 @@ package com.gdse.aad.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,6 +27,10 @@ public class Claim {
     @JoinColumn(name = "guest_id", nullable = false)
     private Guest guest;
 
+    @ManyToOne
+    @JoinColumn(name = "staff_id", nullable = true)
+    private HotelStaff staff;
+
     @Column(columnDefinition = "TEXT")
     private String message;
 
@@ -33,6 +39,8 @@ public class Claim {
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
 
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum Status {
