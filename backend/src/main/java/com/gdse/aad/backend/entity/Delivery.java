@@ -23,8 +23,12 @@ public class Delivery {
     @JoinColumn(name = "lost_id", nullable = false)
     private LostItem lostItem;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private Method method;   // DELIVERY or PICKUP
+
     @Column(columnDefinition = "TEXT")
-    private String address;
+    private String address;  // required only if method == DELIVERY
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
@@ -35,5 +39,9 @@ public class Delivery {
 
     public enum Status {
         PENDING, SHIPPED, DELIVERED
+    }
+
+    public enum Method {
+        DELIVERY, PICKUP
     }
 }
