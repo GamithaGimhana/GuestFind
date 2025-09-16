@@ -26,10 +26,12 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    // Staff/Admin Authentication
     @Override
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
         var staff = hotelStaffRepository.findByEmail(authDTO.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "Staff not found with email: " + authDTO.getEmail()));
 
         if (!passwordEncoder.matches(authDTO.getPassword(), staff.getPasswordHash())) {
             throw new BadCredentialsException("Invalid credentials");
@@ -52,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String register(RegisterDTO dto) {
         hotelStaffRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException("Staff already exists with email: " + dto.getEmail());
         });
 
         Hotel hotel = hotelRepository.findById(dto.getHotelId())
@@ -68,13 +70,15 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         hotelStaffRepository.save(staff);
-        return "User registered successfully";
+        return "Staff registered successfully";
     }
 
+    // Guest Authentication
     @Override
     public AuthResponseDTO guestAuthenticate(AuthDTO authDTO) {
         var guest = guestRepository.findByEmail(authDTO.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Guest not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "Guest not found with email: " + authDTO.getEmail()));
 
         if (!passwordEncoder.matches(authDTO.getPassword(), guest.getPasswordHash())) {
             throw new BadCredentialsException("Invalid credentials");
@@ -95,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String guestRegister(GuestRegisterDTO dto) {
         guestRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
-            throw new RuntimeException("Guest already exists");
+            throw new RuntimeException("Guest already exists with email: " + dto.getEmail());
         });
 
         Guest guest = Guest.builder()
@@ -109,4 +113,3 @@ public class AuthServiceImpl implements AuthService {
         return "Guest registered successfully";
     }
 }
-

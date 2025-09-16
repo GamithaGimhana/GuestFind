@@ -24,18 +24,18 @@ public class FoundItemController {
         );
     }
 
-    // Staff & Admin see ALL found items
+    // see ALL found items
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
     public ResponseEntity<ApiResponseDTO> getAllFoundItems() {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "OK", foundItemService.getAllFoundItems())
         );
     }
 
-    // Guests see only unclaimed found items
+    // See only unclaimed found items
     @GetMapping("/unclaimed")
-    @PreAuthorize("hasRole('GUEST')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
     public ResponseEntity<ApiResponseDTO> getUnclaimedFoundItems() {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "OK", foundItemService.getUnclaimedFoundItems())

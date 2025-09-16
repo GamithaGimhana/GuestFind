@@ -31,10 +31,7 @@ public class GuestController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponseDTO> updateProfile(
-            @RequestHeader("Authorization") String token,
-            @RequestBody GuestDTO dto
-    ) {
+    public ResponseEntity<ApiResponseDTO> updateProfile(@RequestHeader("Authorization") String token, @RequestBody GuestDTO dto) {
         String email = jwtUtil.extractUsername(token.substring(7));
         GuestDTO updated = guestService.updateProfile(email, dto);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Profile Updated", updated));
