@@ -6,12 +6,19 @@ import com.gdse.aad.backend.entity.Notification;
 import com.gdse.aad.backend.exception.ResourceNotFoundException;
 import com.gdse.aad.backend.repository.GuestRepository;
 import com.gdse.aad.backend.repository.NotificationRepository;
+import com.gdse.aad.backend.service.EmailService;
 import com.gdse.aad.backend.service.NotificationService;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -21,11 +28,18 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
-//    private final JavaMailSender mailSender;
+
+    private final EmailService emailService;
+
+    @Value("${sendgrid.api.key}")
+    private String sendgridApiKey;
+
+    @Value("${sendgrid.sender.email}")
+    private String senderEmail; // put in properties: e.g. noreply@guestfind.com
 
     @Override
     @Transactional
-    public void sendNotification(Guest guest, String message) {
+    public void sendNotification(Guest guest, String message) throws IOException {
         // Save in DB
         Notification n = Notification.builder()
                 .guest(guest)
@@ -35,12 +49,8 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
         notificationRepository.save(n);
 
-        // Send email (optional)
-//        SimpleMailMessage mail = new SimpleMailMessage();
-//        mail.setTo(guest.getEmail());
-//        mail.setSubject("GuestFind Notification");
-//        mail.setText(message);
-//        mailSender.send(mail);
+        // Send via SendGrid
+        emailService.sendEmail(guest.getEmail(), "GuestFind Notification", message);
     }
 
     @Override
@@ -50,10 +60,9 @@ public class NotificationServiceImpl implements NotificationService {
 
         return notificationRepository.findByGuest_GuestId(guestId)
                 .stream()
-                .map(n -> modelMapper.map(n, NotificationResponseDTO.class))  // modelMapper handles it now
+                .map(n -> modelMapper.map(n, NotificationResponseDTO.class))
                 .toList();
     }
-
 
     @Override
     @Transactional
@@ -82,5 +91,4 @@ public class NotificationServiceImpl implements NotificationService {
                 .map(n -> modelMapper.map(n, NotificationResponseDTO.class))
                 .toList();
     }
-
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,10 +23,8 @@ public class ClaimController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO> createClaim(
-            @RequestParam Long foundItemId,
-            @RequestParam(required = false) String message,
-            @RequestPart(required = false) MultipartFile proofImage,
-            Authentication authentication) {
+            @RequestParam Long foundItemId, @RequestParam(required = false) String message, @RequestPart(required = false) MultipartFile proofImage,
+            Authentication authentication) throws IOException {
 
         String email = authentication.getName();
         ClaimResponseDTO dto = claimService.createClaim(foundItemId, email, message, proofImage);
@@ -41,7 +40,7 @@ public class ClaimController {
 
     @PutMapping("/{id}/reply")
     @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
-    public ResponseEntity<ApiResponseDTO> replyToClaim(@PathVariable Long id, @RequestBody ReplyDTO reply) {
+    public ResponseEntity<ApiResponseDTO> replyToClaim(@PathVariable Long id, @RequestBody ReplyDTO reply) throws IOException {
         claimService.replyToClaim(id, reply.getMessage(), reply.isApprove());
         return ResponseEntity.ok(new ApiResponseDTO(200, "Replied", null));
     }

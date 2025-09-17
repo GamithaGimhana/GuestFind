@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -34,7 +35,7 @@ public class LostItemServiceImpl implements LostItemService {
 
     @Override
     @Transactional
-    public LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO) {
+    public LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO) throws IOException {
         Guest guest = guestRepository.findById(requestDTO.getGuestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
 
@@ -65,8 +66,7 @@ public class LostItemServiceImpl implements LostItemService {
                 lostItemRepository.save(saved);
                 foundItemRepository.save(found);
 
-                notificationService.sendNotification(saved.getGuest(),
-                        "We may have found your item: " + found.getTitle());
+                notificationService.sendNotification(saved.getGuest(), "We may have found your item: " + found.getTitle());
             }
         }
 

@@ -812,9 +812,13 @@
                         <label for="lostLocation" class="form-label">Location Lost</label>
                         <input type="text" class="form-control" id="lostLocation" required>
                     </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label for="itemImage" class="form-label">Upload Image (Optional)</label>-->
+<!--                        <input type="file" class="form-control" id="itemImage">-->
+<!--                    </div>-->
                     <div class="mb-3">
-                        <label for="itemImage" class="form-label">Upload Image (Optional)</label>
-                        <input type="file" class="form-control" id="itemImage">
+                        <label for="lostItemImage" class="form-label">Upload Image (optional)</label>
+                        <input type="file" class="form-control" id="lostItemImage" accept="image/*">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Submit Report</button>
                 </form>
@@ -849,10 +853,15 @@
                         <label for="foundLocation" class="form-label">Location Found</label>
                         <input type="text" class="form-control" id="foundLocation" required>
                     </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label for="foundItemImage" class="form-label">Upload Image (Optional)</label>-->
+<!--                        <input type="file" class="form-control" id="foundItemImage">-->
+<!--                    </div>-->
                     <div class="mb-3">
-                        <label for="foundItemImage" class="form-label">Upload Image (Optional)</label>
-                        <input type="file" class="form-control" id="foundItemImage">
+                        <label for="foundItemImage" class="form-label">Upload Image (optional)</label>
+                        <input type="file" class="form-control" id="foundItemImage" accept="image/*">
                     </div>
+
                     <button type="submit" class="btn btn-primary w-100">Submit Found Item</button>
                 </form>
             </div>
@@ -879,13 +888,18 @@
                         <label for="claimMessage" class="form-label">Message to Admin</label>
                         <textarea class="form-control" id="claimMessage" rows="3" required placeholder="Please provide details why you believe this is your item"></textarea>
                     </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">Upload Proof (Optional)</label>-->
+<!--                        <div class="claim-proof" id="proofUploadArea">-->
+<!--                            <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>-->
+<!--                            <p>Click to upload proof images</p>-->
+<!--                            <input type="file" class="d-none" id="claimProof">-->
+<!--                        </div>-->
+<!--                        <div id="proofPreview" class="mt-2"></div>-->
+<!--                    </div>-->
                     <div class="mb-3">
-                        <label class="form-label">Upload Proof (Optional)</label>
-                        <div class="claim-proof" id="proofUploadArea">
-                            <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
-                            <p>Click to upload proof images</p>
-                            <input type="file" class="d-none" id="claimProof">
-                        </div>
+                        <label for="claimProof" class="form-label">Proof of Ownership (optional)</label>
+                        <input type="file" class="form-control" id="claimProof" accept="image/*">
                         <div id="proofPreview" class="mt-2"></div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Submit Claim</button>
@@ -1012,6 +1026,34 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="itemDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Item Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="claimDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Claim Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Filled dynamically -->
             </div>
         </div>
     </div>
@@ -1263,14 +1305,72 @@
         });
     }
 
+    // // Update profile
+    // function updateProfile() {
+    //     const name = $('#profileName').val();
+    //     const phone = $('#profilePhone').val();
+    //
+    //     // In a real implementation, you would make an API call to update the profile
+    //     showSuccess('Profile updated successfully!');
+    // }
+
     // Update profile
     function updateProfile() {
         const name = $('#profileName').val();
         const phone = $('#profilePhone').val();
+        const email = $('#profileEmail').val();
 
-        // In a real implementation, you would make an API call to update the profile
-        showSuccess('Profile updated successfully!');
+        const profileData = {
+            name: name,
+            phone: phone
+        };
+
+        // Determine endpoint based on user role
+        const endpoint = currentUser.role === 'GUEST' ? '/guests/profile' : '/staff/profile';
+
+        $.ajax({
+            url: API_BASE_URL + endpoint,
+            type: 'PUT',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(profileData),
+            success: function(response) {
+                if (response.status === 200) {
+                    // Update current user data
+                    currentUser.name = name;
+                    currentUser.phone = phone;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                    // Update UI
+                    $('#profileUserName').text(name);
+                    $('#profileUserEmail').text(email);
+
+                    showSuccess('Profile updated successfully!');
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to update profile: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
     }
+
+    // // Update password
+    // function updatePassword() {
+    //     const currentPassword = $('#currentPassword').val();
+    //     const newPassword = $('#newPassword').val();
+    //     const confirmPassword = $('#confirmPassword').val();
+    //
+    //     if (newPassword !== confirmPassword) {
+    //         showError('New passwords do not match!');
+    //         return;
+    //     }
+    //
+    //     // In a real implementation, you would make an API call to update the password
+    //     showSuccess('Password updated successfully!');
+    //     $('#securityForm')[0].reset();
+    // }
 
     // Update password
     function updatePassword() {
@@ -1283,18 +1383,161 @@
             return;
         }
 
-        // In a real implementation, you would make an API call to update the password
-        showSuccess('Password updated successfully!');
-        $('#securityForm')[0].reset();
+        const passwordData = {
+            currentPassword: currentPassword,
+            newPassword: newPassword
+        };
+
+        // Determine endpoint based on user role
+        const endpoint = currentUser.role === 'GUEST' ? '/guests/me/password' : '/staff/me/password';
+
+        $.ajax({
+            url: API_BASE_URL + endpoint,
+            type: 'PUT',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(passwordData),
+            success: function(response) {
+                if (response.status === 200) {
+                    showSuccess('Password updated successfully!');
+                    $('#securityForm')[0].reset();
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to update password: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    }
+
+    // Upload image to imgbb and return the hosted URL
+    // async function uploadImageToImgbb(file) {
+    //     const formData = new FormData();
+    //     formData.append("image", file);
+    //
+    //     try {
+    //         const response = await $.ajax({
+    //             url: `https://api.imgbb.com/1/upload?key=c8855e05a325a45010e5109d472fce84`,
+    //             type: "POST",
+    //             data: formData,
+    //             processData: false,
+    //             contentType: false
+    //         });
+    //
+    //         if (response && response.data && response.data.url) {
+    //             return response.data.url;
+    //         } else {
+    //             throw new Error("Invalid response from imgbb");
+    //         }
+    //     } catch (err) {
+    //         console.error("Image upload failed:", err);
+    //         showError("Failed to upload image. Please try again.");
+    //         return null;
+    //     }
+    // }
+
+    // Upload image to imgbb and return the hosted URL
+    async function uploadImageToImgbb(file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        // Show "Uploading…" message if there’s a preview container available
+        if ($('#proofPreview').length) {
+            $('#proofPreview').html('<div class="alert alert-info">Uploading image...</div>');
+        }
+
+        try {
+            const response = await $.ajax({
+                url: `https://api.imgbb.com/1/upload?key=c8855e05a325a45010e5109d472fce84`,
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false
+            });
+
+            if (response && response.data && response.data.url) {
+                // Show success message only for proof uploads
+                if ($('#proofPreview').length) {
+                    $('#proofPreview').html(`
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Image uploaded successfully!
+                    </div>
+                `);
+                }
+                return response.data.url;
+            } else {
+                throw new Error("Invalid response from imgbb");
+            }
+        } catch (err) {
+            console.error("Image upload failed:", err);
+            showError("Failed to upload image. Please try again.");
+            if ($('#proofPreview').length) {
+                $('#proofPreview').html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Upload failed
+                </div>
+            `);
+            }
+            return null;
+        }
     }
 
     // Report lost item
-    function reportLostItem() {
+    // function reportLostItem() {
+    //     if (!currentUser || !jwtToken) {
+    //         showError('Please login first to report a lost item.');
+    //         $('#reportModal').modal('hide');
+    //         $('#loginModal').modal('show');
+    //         return;
+    //     }
+    //
+    //     const itemData = {
+    //         guestId: currentUser.guestId || currentUser.id,
+    //         title: $('#itemName').val(),
+    //         description: $('#itemDescription').val(),
+    //         dateLost: $('#lostDate').val(),
+    //         locationLost: $('#lostLocation').val(),
+    //         imagePath: '' // You would handle file upload separately
+    //     };
+    //
+    //     $.ajax({
+    //         url: API_BASE_URL + '/lost-items',
+    //         type: 'POST',
+    //         contentType: 'application/json',
+    //         headers: {
+    //             'Authorization': 'Bearer ' + jwtToken
+    //         },
+    //         data: JSON.stringify(itemData),
+    //         success: function(response) {
+    //             if (response.status === 200) {
+    //                 showSuccess('Item reported successfully!');
+    //                 $('#reportModal').modal('hide');
+    //                 loadDashboardData(); // Refresh data
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             showError('Failed to report item: ' + (xhr.responseJSON?.message || 'Unknown error'));
+    //         }
+    //     });
+    // }
+
+    async function reportLostItem() {
         if (!currentUser || !jwtToken) {
             showError('Please login first to report a lost item.');
             $('#reportModal').modal('hide');
             $('#loginModal').modal('show');
             return;
+        }
+
+        const file = $('#lostItemImage')[0]?.files[0]; // add input for image in your form
+        let imageUrl = '';
+
+        if (file) {
+            imageUrl = await uploadImageToImgbb(file);
+            if (!imageUrl) return; // stop if upload failed
         }
 
         const itemData = {
@@ -1303,22 +1546,20 @@
             description: $('#itemDescription').val(),
             dateLost: $('#lostDate').val(),
             locationLost: $('#lostLocation').val(),
-            imagePath: '' // You would handle file upload separately
+            imagePath: imageUrl
         };
 
         $.ajax({
             url: API_BASE_URL + '/lost-items',
             type: 'POST',
             contentType: 'application/json',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
             data: JSON.stringify(itemData),
             success: function(response) {
                 if (response.status === 200) {
                     showSuccess('Item reported successfully!');
                     $('#reportModal').modal('hide');
-                    loadDashboardData(); // Refresh data
+                    loadDashboardData();
                 }
             },
             error: function(xhr) {
@@ -1328,7 +1569,52 @@
     }
 
     // Report found item
-    function reportFoundItem() {
+    // function reportFoundItem() {
+    //     if (!currentUser || !jwtToken) {
+    //         showError('Please login first to report a found item.');
+    //         $('#foundModal').modal('hide');
+    //         $('#loginModal').modal('show');
+    //         return;
+    //     }
+    //
+    //     // Only staff can report found items
+    //     if (!currentUser.role || currentUser.role === 'GUEST') {
+    //         showError('Only hotel staff can report found items.');
+    //         $('#foundModal').modal('hide');
+    //         return;
+    //     }
+    //
+    //     const itemData = {
+    //         staffId: currentUser.staffId || currentUser.id,
+    //         title: $('#foundItemName').val(),
+    //         description: $('#foundItemDescription').val(),
+    //         foundDate: $('#foundDate').val(),
+    //         locationFound: $('#foundLocation').val(),
+    //         imagePath: '' // You would handle file upload separately
+    //     };
+    //
+    //     $.ajax({
+    //         url: API_BASE_URL + '/found-items',
+    //         type: 'POST',
+    //         contentType: 'application/json',
+    //         headers: {
+    //             'Authorization': 'Bearer ' + jwtToken
+    //         },
+    //         data: JSON.stringify(itemData),
+    //         success: function(response) {
+    //             if (response.status === 200) {
+    //                 showSuccess('Found item reported successfully!');
+    //                 $('#foundModal').modal('hide');
+    //                 loadDashboardData(); // Refresh data
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             showError('Failed to report found item: ' + (xhr.responseJSON?.message || 'Unknown error'));
+    //         }
+    //     });
+    // }
+
+    async function reportFoundItem() {
         if (!currentUser || !jwtToken) {
             showError('Please login first to report a found item.');
             $('#foundModal').modal('hide');
@@ -1336,11 +1622,18 @@
             return;
         }
 
-        // Only staff can report found items
         if (!currentUser.role || currentUser.role === 'GUEST') {
             showError('Only hotel staff can report found items.');
             $('#foundModal').modal('hide');
             return;
+        }
+
+        const file = $('#foundItemImage')[0]?.files[0]; // add input for found item image
+        let imageUrl = '';
+
+        if (file) {
+            imageUrl = await uploadImageToImgbb(file);
+            if (!imageUrl) return;
         }
 
         const itemData = {
@@ -1349,22 +1642,20 @@
             description: $('#foundItemDescription').val(),
             foundDate: $('#foundDate').val(),
             locationFound: $('#foundLocation').val(),
-            imagePath: '' // You would handle file upload separately
+            imagePath: imageUrl
         };
 
         $.ajax({
             url: API_BASE_URL + '/found-items',
             type: 'POST',
             contentType: 'application/json',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
             data: JSON.stringify(itemData),
             success: function(response) {
                 if (response.status === 200) {
                     showSuccess('Found item reported successfully!');
                     $('#foundModal').modal('hide');
-                    loadDashboardData(); // Refresh data
+                    loadDashboardData();
                 }
             },
             error: function(xhr) {
@@ -1374,31 +1665,142 @@
     }
 
     // Submit claim for an item
+    // function submitClaim() {
+    //     const itemId = $('#claimItemId').val();
+    //     const message = $('#claimMessage').val();
+    //     const proofImage = $('#claimProof')[0].files[0];
+    //
+    //     // Create form data for file upload
+    //     const formData = new FormData();
+    //     formData.append('foundItemId', itemId);
+    //     formData.append('message', message);
+    //     if (proofImage) {
+    //         formData.append('proofImage', proofImage);
+    //     }
+    //
+    //     $.ajax({
+    //         url: API_BASE_URL + '/claims',
+    //         type: 'POST',
+    //         headers: {
+    //             'Authorization': 'Bearer ' + jwtToken
+    //         },
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
+    //         success: function(response) {
+    //             if (response.status === 200) {
+    //                 showSuccess('Claim submitted successfully! The admin will review your request.');
+    //                 $('#claimItemModal').modal('hide');
+    //                 loadDashboardData(); // Refresh data
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             showError('Failed to submit claim: ' + (xhr.responseJSON?.message || 'Unknown error'));
+    //         }
+    //     });
+    // }
+
     function submitClaim() {
         const itemId = $('#claimItemId').val();
         const message = $('#claimMessage').val();
+        const proofImageUrl = $('#claimProof').data("uploadedUrl") || null;
 
-        // In a real implementation, you would make an API call to submit the claim
-        showSuccess('Claim submitted successfully! The admin will review your request.');
-        $('#claimItemModal').modal('hide');
+        const claimData = {
+            foundItemId: itemId,
+            message: message,
+            proofImageUrl: proofImageUrl
+        };
+
+        $.ajax({
+            url: API_BASE_URL + '/claims',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(claimData),
+            success: function(response) {
+                if (response.status === 200) {
+                    showSuccess('Claim submitted successfully! The admin will review your request.');
+                    $('#claimItemModal').modal('hide');
+                    loadDashboardData();
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to submit claim: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
     }
+
+
+    // Handle proof upload
+    // function handleProofUpload(e) {
+    //     const file = e.target.files[0];
+    //     if (!file) return;
+    //
+    //     // In a real implementation, you would upload the file to a server
+    //     const reader = new FileReader();
+    //     reader.onload = function(e) {
+    //         $('#proofPreview').html(`
+    //             <div class="alert alert-info">
+    //                 <i class="fas fa-check-circle me-2"></i>
+    //                 File selected: ${file.name}
+    //             </div>
+    //         `);
+    //     };
+    //     reader.readAsDataURL(file);
+    // }
 
     // Handle proof upload
     function handleProofUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
 
-        // In a real implementation, you would upload the file to a server
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            $('#proofPreview').html(`
-                <div class="alert alert-info">
-                    <i class="fas fa-check-circle me-2"></i>
-                    File selected: ${file.name}
-                </div>
+        const apiKey = "c8855e05a325a45010e5109d472fce84"; // ImgBB API key
+        const formData = new FormData();
+        formData.append("image", file);
+
+        // Show "uploading..." while waiting
+        $('#proofPreview').html(`
+        <div class="alert alert-warning">
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            Uploading ${file.name}...
+        </div>
+    `);
+
+        $.ajax({
+            url: `https://api.imgbb.com/1/upload?key=${apiKey}`,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response && response.data && response.data.url) {
+                    const imageUrl = response.data.url;
+
+                    // Save this URL globally to attach in submitClaim()
+                    $('#claimProof').data("uploadedUrl", imageUrl);
+
+                    $('#proofPreview').html(`
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Uploaded successfully! <br>
+                        <a href="${imageUrl}" target="_blank">View Image</a>
+                    </div>
+                `);
+                } else {
+                    $('#proofPreview').html(`
+                    <div class="alert alert-danger">Upload failed, please try again.</div>
+                `);
+                }
+            },
+            error: function(err) {
+                console.error("Upload failed:", err);
+                $('#proofPreview').html(`
+                <div class="alert alert-danger">Error uploading file.</div>
             `);
-        };
-        reader.readAsDataURL(file);
+            }
+        });
     }
 
     // Load dashboard data based on user role
@@ -1430,17 +1832,50 @@
         loadProfileData();
     }
 
+    // // Load profile data
+    // function loadProfileData() {
+    //     if (!currentUser) return;
+    //
+    //     $('#profileUserName').text(currentUser.name || 'User Name');
+    //     $('#profileUserRole').text(currentUser.role || 'Guest');
+    //     $('#profileUserEmail').text(currentUser.email || 'email@example.com');
+    //
+    //     $('#profileName').val(currentUser.name || '');
+    //     $('#profileEmail').val(currentUser.email || '');
+    //     $('#profilePhone').val(currentUser.phone || '');
+    // }
+
     // Load profile data
     function loadProfileData() {
         if (!currentUser) return;
 
-        $('#profileUserName').text(currentUser.name || 'User Name');
-        $('#profileUserRole').text(currentUser.role || 'Guest');
-        $('#profileUserEmail').text(currentUser.email || 'email@example.com');
+        // Determine endpoint based on user role
+        const endpoint = currentUser.role === 'GUEST' ? '/guests/profile' : '/staff/profile';
 
-        $('#profileName').val(currentUser.name || '');
-        $('#profileEmail').val(currentUser.email || '');
-        $('#profilePhone').val(currentUser.phone || '');
+        $.ajax({
+            url: API_BASE_URL + endpoint,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    const profile = response.data;
+
+                    // Update profile fields
+                    $('#profileUserName').text(profile.name || 'User Name');
+                    $('#profileUserRole').text(currentUser.role || 'Guest');
+                    $('#profileUserEmail').text(profile.email || 'email@example.com');
+
+                    $('#profileName').val(profile.name || '');
+                    $('#profileEmail').val(profile.email || '');
+                    $('#profilePhone').val(profile.phone || '');
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load profile:', xhr);
+            }
+        });
     }
 
     // Show profile section
@@ -1542,6 +1977,23 @@
             },
             error: function(xhr) {
                 console.error('Failed to load hotels:', xhr);
+            }
+        });
+
+        // Load claims (admin only)
+        $.ajax({
+            url: API_BASE_URL + '/claims',
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateClaimRequestsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load claims:', xhr);
             }
         });
 
@@ -1972,10 +2424,143 @@
         });
     }
 
+    // Populate claim requests table
+    function populateClaimRequestsTable(claims) {
+        const tbody = $('#claimRequestsTable tbody');
+        tbody.empty();
+
+        if (!claims || claims.length === 0) {
+            tbody.append('<tr><td colspan="5" class="text-center py-4">No claim requests found</td></tr>');
+            $('#claimRequestsCount').text('0');
+            return;
+        }
+
+        $('#claimRequestsCount').text(claims.length);
+
+        claims.forEach(claim => {
+            const statusClass = getStatusClass(claim.status);
+            const row = `
+                <tr>
+                    <td>${claim.foundItemTitle || 'Unknown Item'}</td>
+                    <td>${claim.guestName || 'Unknown Guest'}</td>
+                    <td>${formatDate(claim.claimDate) || 'N/A'}</td>
+                    <td><span class="status-badge ${statusClass}">${claim.status || 'PENDING'}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary view-claim action-btn" data-id="${claim.claimId}">View</button>
+                        <button class="btn btn-sm btn-outline-success approve-claim action-btn" data-id="${claim.claimId}">Approve</button>
+                        <button class="btn btn-sm btn-outline-danger reject-claim action-btn" data-id="${claim.claimId}">Reject</button>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+
+        // Add event listeners
+        $('.view-claim').on('click', function() {
+            const claimId = $(this).data('id');
+            viewClaim(claimId);
+        });
+
+        $('.approve-claim').on('click', function() {
+            const claimId = $(this).data('id');
+            replyToClaim(claimId, true);
+        });
+
+        $('.reject-claim').on('click', function() {
+            const claimId = $(this).data('id');
+            replyToClaim(claimId, false);
+        });
+    }
+
+    // // View item details
+    // function viewItem(itemId, type) {
+    //     // In a real implementation, you would fetch item details and show them
+    //     showInfo(`Viewing ${type} item #${itemId}`);
+    // }
+
     // View item details
     function viewItem(itemId, type) {
-        // In a real implementation, you would fetch item details and show them
-        showInfo(`Viewing ${type} item #${itemId}`);
+        $.ajax({
+            url: API_BASE_URL + `/${type}-items/${itemId}`,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    // Display item details in a modal or dedicated section
+                    showItemDetails(response.data, type);
+                }
+            },
+            error: function(xhr) {
+                console.error(`Failed to load ${type} item:`, xhr);
+                showError(`Failed to load ${type} item details`);
+            }
+        });
+    }
+
+    // Display item details (lost or found) in a modal
+    function showItemDetails(item, type) {
+        const modalBody = $('#itemDetailsModal .modal-body');
+        modalBody.empty();
+
+        const imageHtml = item.imagePath
+            ? `<img src="${item.imagePath}" class="img-fluid rounded mb-3" alt="Item Image">`
+            : `<div class="alert alert-secondary">No image available</div>`;
+
+        const detailsHtml = `
+        <h5>${item.title || 'Unknown Item'}</h5>
+        <p>${item.description || 'No description provided.'}</p>
+        <ul class="list-unstyled">
+            <li><strong>Reported By:</strong> ${item.guestName || item.staffName || 'N/A'}</li>
+            <li><strong>Date:</strong> ${formatDate(item.reportedDate || item.foundDate)}</li>
+            <li><strong>Location:</strong> ${item.locationLost || item.locationFound || 'N/A'}</li>
+            <li><strong>Status:</strong> ${item.status || 'UNKNOWN'}</li>
+        </ul>
+        ${imageHtml}
+    `;
+
+        modalBody.html(detailsHtml);
+
+        // Show the modal
+        $('#itemDetailsModal').modal('show');
+    }
+
+    // Show claim details in a modal (admin view)
+    function showClaimDetails(claim) {
+        const modalBody = $('#claimDetailsModal .modal-body');
+        modalBody.empty();
+
+        const proofHtml = claim.proofImageUrl
+            ? `<img src="${claim.proofImageUrl}" class="img-fluid rounded mb-3" alt="Proof Image">`
+            : `<div class="alert alert-secondary">No proof image provided</div>`;
+
+        const detailsHtml = `
+        <h5>Claim for: ${claim.foundItemTitle || 'Unknown Item'}</h5>
+        <p><strong>Guest:</strong> ${claim.guestName || 'N/A'}</p>
+        <p><strong>Message:</strong> ${claim.message || 'No message provided.'}</p>
+        <p><strong>Status:</strong> ${claim.status || 'PENDING'}</p>
+        <p><strong>Date:</strong> ${formatDate(claim.claimDate)}</p>
+        ${proofHtml}
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-success me-2" id="approveClaimBtn" data-id="${claim.claimId}">Approve</button>
+            <button class="btn btn-danger" id="rejectClaimBtn" data-id="${claim.claimId}">Reject</button>
+        </div>
+    `;
+
+        modalBody.html(detailsHtml);
+        $('#claimDetailsModal').modal('show');
+
+        // Attach event listeners
+        $('#approveClaimBtn').on('click', function() {
+            replyToClaim(claim.claimId, true);
+            $('#claimDetailsModal').modal('hide');
+        });
+
+        $('#rejectClaimBtn').on('click', function() {
+            replyToClaim(claim.claimId, false);
+            $('#claimDetailsModal').modal('hide');
+        });
     }
 
     // Edit item
@@ -1984,11 +2569,34 @@
         showInfo(`Editing ${type} item #${itemId}`);
     }
 
+    // // Archive item
+    // function archiveItem(itemId, type) {
+    //     showConfirm(`Are you sure you want to archive this ${type} item?`, function() {
+    //         // In a real implementation, you would make an API call to archive the item
+    //         showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item archived successfully!`);
+    //     });
+    // }
+
     // Archive item
     function archiveItem(itemId, type) {
         showConfirm(`Are you sure you want to archive this ${type} item?`, function() {
-            // In a real implementation, you would make an API call to archive the item
-            showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item archived successfully!`);
+            $.ajax({
+                url: API_BASE_URL + `/${type}-items/${itemId}/archive`,
+                type: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken
+                },
+                success: function(response) {
+                    if (response.status === 200) {
+                        showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item archived successfully!`);
+                        loadDashboardData(); // Refresh data
+                    }
+                },
+                error: function(xhr) {
+                    console.error(`Failed to archive ${type} item:`, xhr);
+                    showError(`Failed to archive ${type} item`);
+                }
+            });
         });
     }
 
@@ -2005,6 +2613,57 @@
         $('#claimMessage').val('');
         $('#proofPreview').html('');
         $('#claimItemModal').modal('show');
+    }
+
+    // View claim details
+    function viewClaim(claimId) {
+        $.ajax({
+            url: API_BASE_URL + `/claims/${claimId}`,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function(response) {
+                if (response.status === 200) {
+                    showClaimDetails(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to load claim details:', xhr);
+                showError('Failed to load claim details');
+            }
+        });
+    }
+
+    // Reply to claim (approve/reject)
+    function replyToClaim(claimId, approve) {
+        const message = prompt(`Please enter a message for the ${approve ? 'approval' : 'rejection'}:`);
+        if (message === null) return; // User cancelled
+
+        const replyData = {
+            message: message,
+            approve: approve
+        };
+
+        $.ajax({
+            url: API_BASE_URL + `/claims/${claimId}/reply`,
+            type: 'PUT',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(replyData),
+            success: function(response) {
+                if (response.status === 200) {
+                    showSuccess(`Claim ${approve ? 'approved' : 'rejected'} successfully!`);
+                    loadDashboardData(); // Refresh data
+                }
+            },
+            error: function(xhr) {
+                console.error('Failed to reply to claim:', xhr);
+                showError('Failed to process claim request');
+            }
+        });
     }
 
     // Filter items by status

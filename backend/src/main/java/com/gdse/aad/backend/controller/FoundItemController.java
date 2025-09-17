@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/found-items")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class FoundItemController {
     // Guest, Staff, Admin can report found items
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
-    public ResponseEntity<ApiResponseDTO> createFoundItem(@RequestBody FoundItemRequestDTO dto) {
+    public ResponseEntity<ApiResponseDTO> createFoundItem(@RequestBody FoundItemRequestDTO dto) throws IOException {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Created", foundItemService.createFoundItem(dto))
         );

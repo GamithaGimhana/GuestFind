@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/lost-items")
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class LostItemController {
     // Guests report lost items
     @PostMapping
     @PreAuthorize("hasRole('GUEST')")
-    public ResponseEntity<ApiResponseDTO> createLostItem(@RequestBody LostItemRequestDTO dto) {
+    public ResponseEntity<ApiResponseDTO> createLostItem(@RequestBody LostItemRequestDTO dto) throws IOException {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Created", lostItemService.createLostItem(dto))
         );

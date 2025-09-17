@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -34,7 +35,7 @@ public class FoundItemServiceImpl implements FoundItemService {
 
     @Override
     @Transactional
-    public FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto) {
+    public FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto) throws IOException {
         HotelStaff staff = staffRepository.findById(dto.getStaffId())
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
 
