@@ -1305,15 +1305,6 @@
         });
     }
 
-    // // Update profile
-    // function updateProfile() {
-    //     const name = $('#profileName').val();
-    //     const phone = $('#profilePhone').val();
-    //
-    //     // In a real implementation, you would make an API call to update the profile
-    //     showSuccess('Profile updated successfully!');
-    // }
-
     // Update profile
     function updateProfile() {
         const name = $('#profileName').val();
@@ -1356,22 +1347,6 @@
         });
     }
 
-    // // Update password
-    // function updatePassword() {
-    //     const currentPassword = $('#currentPassword').val();
-    //     const newPassword = $('#newPassword').val();
-    //     const confirmPassword = $('#confirmPassword').val();
-    //
-    //     if (newPassword !== confirmPassword) {
-    //         showError('New passwords do not match!');
-    //         return;
-    //     }
-    //
-    //     // In a real implementation, you would make an API call to update the password
-    //     showSuccess('Password updated successfully!');
-    //     $('#securityForm')[0].reset();
-    // }
-
     // Update password
     function updatePassword() {
         const currentPassword = $('#currentPassword').val();
@@ -1410,32 +1385,6 @@
             }
         });
     }
-
-    // Upload image to imgbb and return the hosted URL
-    // async function uploadImageToImgbb(file) {
-    //     const formData = new FormData();
-    //     formData.append("image", file);
-    //
-    //     try {
-    //         const response = await $.ajax({
-    //             url: `https://api.imgbb.com/1/upload?key=c8855e05a325a45010e5109d472fce84`,
-    //             type: "POST",
-    //             data: formData,
-    //             processData: false,
-    //             contentType: false
-    //         });
-    //
-    //         if (response && response.data && response.data.url) {
-    //             return response.data.url;
-    //         } else {
-    //             throw new Error("Invalid response from imgbb");
-    //         }
-    //     } catch (err) {
-    //         console.error("Image upload failed:", err);
-    //         showError("Failed to upload image. Please try again.");
-    //         return null;
-    //     }
-    // }
 
     // Upload image to imgbb and return the hosted URL
     async function uploadImageToImgbb(file) {
@@ -1732,25 +1681,6 @@
         });
     }
 
-
-    // Handle proof upload
-    // function handleProofUpload(e) {
-    //     const file = e.target.files[0];
-    //     if (!file) return;
-    //
-    //     // In a real implementation, you would upload the file to a server
-    //     const reader = new FileReader();
-    //     reader.onload = function(e) {
-    //         $('#proofPreview').html(`
-    //             <div class="alert alert-info">
-    //                 <i class="fas fa-check-circle me-2"></i>
-    //                 File selected: ${file.name}
-    //             </div>
-    //         `);
-    //     };
-    //     reader.readAsDataURL(file);
-    // }
-
     // Handle proof upload
     function handleProofUpload(e) {
         const file = e.target.files[0];
@@ -1831,19 +1761,6 @@
         // Load profile data
         loadProfileData();
     }
-
-    // // Load profile data
-    // function loadProfileData() {
-    //     if (!currentUser) return;
-    //
-    //     $('#profileUserName').text(currentUser.name || 'User Name');
-    //     $('#profileUserRole').text(currentUser.role || 'Guest');
-    //     $('#profileUserEmail').text(currentUser.email || 'email@example.com');
-    //
-    //     $('#profileName').val(currentUser.name || '');
-    //     $('#profileEmail').val(currentUser.email || '');
-    //     $('#profilePhone').val(currentUser.phone || '');
-    // }
 
     // Load profile data
     function loadProfileData() {
@@ -2756,108 +2673,6 @@
             timer: 2000
         });
     }
-
-    // // Load admin statistics
-    // function loadAdminStats() {
-    //     const statsHtml = `
-    //         <div class="col-md-3">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="lostItemsCount">0</div>
-    //                 <div class="stat-label">Lost Items</div>
-    //             </div>
-    //         </div>
-    //         <div class="col-md-3">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="foundItemsCount">0</div>
-    //                 <div class="stat-label">Found Items</div>
-    //             </div>
-    //         </div>
-    //         <div class="col-md-3">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="matchedItemsCount">0</div>
-    //                 <div class="stat-label">Matched Items</div>
-    //             </div>
-    //         </div>
-    //         <div class="col-md-3">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="guestsCount">0</div>
-    //                 <div class="stat-label">Registered Guests</div>
-    //             </div>
-    //         </div>
-    //     `;
-    //
-    //     $('#statsSection').html(statsHtml);
-    //
-    //     // You would make API calls to get actual counts
-    //     // For now, we'll set some placeholder values
-    //     setTimeout(() => {
-    //         $('#lostItemsCount').text('24');
-    //         $('#foundItemsCount').text('18');
-    //         $('#matchedItemsCount').text('12');
-    //         $('#guestsCount').text('56');
-    //     }, 500);
-    // }
-    //
-    // // Load staff statistics
-    // function loadStaffStats() {
-    //     const statsHtml = `
-    //         <div class="col-md-4">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="staffLostItemsCount">0</div>
-    //                 <div class="stat-label">Lost Items</div>
-    //             </div>
-    //         </div>
-    //         <div class="col-md-4">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="staffFoundItemsCount">0</div>
-    //                 <div class="stat-label">Found Items</div>
-    //             </div>
-    //         </div>
-    //         <div class="col-md-4">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="staffMatchedItemsCount">0</div>
-    //                 <div class="stat-label">Matched Items</div>
-    //             </div>
-    //         </div>
-    //     `;
-    //
-    //     $('#statsSection').html(statsHtml);
-    //
-    //     // You would make API calls to get actual counts
-    //     // For now, we'll set some placeholder values
-    //     setTimeout(() => {
-    //         $('#staffLostItemsCount').text('14');
-    //         $('#staffFoundItemsCount').text('8');
-    //         $('#staffMatchedItemsCount').text('5');
-    //     }, 500);
-    // }
-    //
-    // // Load guest statistics
-    // function loadGuestStats() {
-    //     const statsHtml = `
-    //         <div class="col-md-6">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="guestLostItemsCount">0</div>
-    //                 <div class="stat-label">Your Lost Items</div>
-    //             </div>
-    //         </div>
-    //         <div class="col-md-6">
-    //             <div class="stat-card text-center p-3">
-    //                 <div class="stat-number" id="guestMatchedItemsCount">0</div>
-    //                 <div class="stat-label">Matched Items</div>
-    //             </div>
-    //         </div>
-    //     `;
-    //
-    //     $('#statsSection').html(statsHtml);
-    //
-    //     // You would make API calls to get actual counts
-    //     // For now, we'll set some placeholder values
-    //     setTimeout(() => {
-    //         $('#guestLostItemsCount').text('3');
-    //         $('#guestMatchedItemsCount').text('1');
-    //     }, 500);
-    // }
 
     // Load Admin statistics
     function loadAdminStats() {
