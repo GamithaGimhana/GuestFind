@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ClaimService {
-    ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage) throws IOException;
+    ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage);
     List<ClaimResponseDTO> getAllClaims();
-    void replyToClaim(Long claimId, String replyMessage, boolean approve) throws IOException;
+    void replyToClaim(Long claimId, String replyMessage, boolean approve);
 }

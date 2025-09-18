@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FoundItemService {
-    FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto) throws IOException;
+    FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto);
     List<FoundItemResponseDTO> getAllFoundItems();
     List<FoundItemResponseDTO> getUnclaimedFoundItems();
     void archiveFoundItem(Long id);

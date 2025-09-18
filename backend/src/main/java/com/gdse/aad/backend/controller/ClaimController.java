@@ -40,7 +40,7 @@ public class ClaimController {
 
     @PutMapping("/{id}/reply")
     @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
-    public ResponseEntity<ApiResponseDTO> replyToClaim(@PathVariable Long id, @RequestBody ReplyDTO reply) throws IOException {
+    public ResponseEntity<ApiResponseDTO> replyToClaim(@PathVariable Long id, @RequestBody ReplyDTO reply) {
         claimService.replyToClaim(id, reply.getMessage(), reply.isApprove());
         return ResponseEntity.ok(new ApiResponseDTO(200, "Replied", null));
     }

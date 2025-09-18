@@ -20,7 +20,7 @@ public class FoundItemController {
     // Guest, Staff, Admin can report found items
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
-    public ResponseEntity<ApiResponseDTO> createFoundItem(@RequestBody FoundItemRequestDTO dto) throws IOException {
+    public ResponseEntity<ApiResponseDTO> createFoundItem(@RequestBody FoundItemRequestDTO dto) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Created", foundItemService.createFoundItem(dto))
         );

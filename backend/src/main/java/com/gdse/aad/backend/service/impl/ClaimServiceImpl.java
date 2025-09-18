@@ -35,7 +35,7 @@ public class ClaimServiceImpl implements ClaimService {
 
     @Override
     @Transactional
-    public ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage) throws IOException {
+    public ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage) {
         Guest guest = guestRepository.findByEmail(guestEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
 
@@ -91,7 +91,7 @@ public class ClaimServiceImpl implements ClaimService {
 
     @Override
     @Transactional
-    public void replyToClaim(Long claimId, String replyMessage, boolean approve) throws IOException {
+    public void replyToClaim(Long claimId, String replyMessage, boolean approve) {
         Claim claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
 

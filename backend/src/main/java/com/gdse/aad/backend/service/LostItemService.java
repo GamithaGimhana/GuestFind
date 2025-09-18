@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface LostItemService {
-    LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO) throws IOException;
+    LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO);
     LostItemResponseDTO getLostItemById(Long id);
     List<LostItemResponseDTO> getAllLostItems();
     LostItemResponseDTO updateLostItem(Long id, LostItemRequestDTO requestDTO);

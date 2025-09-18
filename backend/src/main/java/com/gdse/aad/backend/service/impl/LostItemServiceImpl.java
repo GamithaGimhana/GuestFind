@@ -35,7 +35,7 @@ public class LostItemServiceImpl implements LostItemService {
 
     @Override
     @Transactional
-    public LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO) throws IOException {
+    public LostItemResponseDTO createLostItem(LostItemRequestDTO requestDTO) {
         Guest guest = guestRepository.findById(requestDTO.getGuestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
 

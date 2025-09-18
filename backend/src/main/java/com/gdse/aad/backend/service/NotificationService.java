@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface NotificationService {
-    void sendNotification(Guest guest, String message) throws IOException;
+    void sendNotification(Guest guest, String message);
     List<NotificationResponseDTO> getNotificationsForGuest(Long guestId);
     void markAsRead(Long notificationId);
     List<NotificationResponseDTO> getNotificationsForGuestEmail(String email);

@@ -21,7 +21,7 @@ public class LostItemController {
     // Guests report lost items
     @PostMapping
     @PreAuthorize("hasRole('GUEST')")
-    public ResponseEntity<ApiResponseDTO> createLostItem(@RequestBody LostItemRequestDTO dto) throws IOException {
+    public ResponseEntity<ApiResponseDTO> createLostItem(@RequestBody LostItemRequestDTO dto) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Created", lostItemService.createLostItem(dto))
         );

@@ -35,7 +35,7 @@ public class FoundItemServiceImpl implements FoundItemService {
 
     @Override
     @Transactional
-    public FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto) throws IOException {
+    public FoundItemResponseDTO createFoundItem(FoundItemRequestDTO dto) {
         HotelStaff staff = staffRepository.findById(dto.getStaffId())
                 .orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
 
