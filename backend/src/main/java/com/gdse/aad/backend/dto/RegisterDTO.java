@@ -10,5 +10,4 @@ public class RegisterDTO {
     private String password;
     private String role;     // "STAFF" or "ADMIN"
     private Long hotelId;
-
 }

@@ -1001,6 +1001,28 @@
     </div>
 </div>
 
+<!-- Add Hotel Modal -->
+<div class="modal fade" id="addHotelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addHotelForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Hotel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input id="hotelName" class="form-control mb-3" placeholder="Hotel Name" required>
+                    <input id="hotelAddress" class="form-control mb-3" placeholder="Address" required>
+                    <input id="hotelPhone" class="form-control mb-3" placeholder="Phone" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Hotel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="manageStaffModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1031,6 +1053,38 @@
     </div>
 </div>
 
+<!-- Add Staff Modal -->
+<div class="modal fade" id="addStaffModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addStaffForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Staff</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input id="staffName" class="form-control mb-3" placeholder="Name" required>
+                    <input id="staffEmail" type="email" class="form-control mb-3" placeholder="Email" required>
+                    <input id="staffPhone" type="tel" class="form-control mb-3" placeholder="Phone" required>
+                    <input id="staffPassword" type="password" class="form-control mb-3" placeholder="Password" required>
+                    <select id="staffRole" class="form-control mb-3" required>
+                        <option value="STAFF">Staff</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+<!--                    <input id="staffHotelId" class="form-control mb-3" placeholder="Hotel ID" required>-->
+                    <select id="staffHotelId" class="form-control mb-3" required>
+                        <option value="">Select Hotel</option>
+                        <!-- dynamically fill from backend -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="itemDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -1056,6 +1110,57 @@
                 <!-- Filled dynamically -->
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="editItemForm" class="modal-content">
+            <div class="modal-header"><h5>Edit Item</h5></div>
+            <div class="modal-body">
+                <input type="hidden" id="editItemId">
+                <input type="hidden" id="editItemType">
+                <div class="mb-3">
+                    <label>Title</label>
+                    <input type="text" id="editItemTitle" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Description</label>
+                    <textarea id="editItemDescription" class="form-control" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label>Date</label>
+                    <input type="date" id="editItemDate" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Location</label>
+                    <input type="text" id="editItemLocation" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="matchItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="matchItemForm" class="modal-content">
+            <div class="modal-header"><h5>Match Found Item</h5></div>
+            <div class="modal-body">
+                <input type="hidden" id="matchFoundItemId">
+                <div class="mb-3">
+                    <label>Select Lost Item</label>
+                    <select id="matchLostItemSelect" class="form-control"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Match</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -1195,6 +1300,32 @@
             $('[data-filter]').removeClass('active');
             $(this).addClass('active');
             filterItems(filter);
+        });
+
+        // Open Add Hotel form
+        $('#addHotelBtn').on('click', function() {
+            $('#addHotelModal').modal('show');
+        });
+
+        // Open Add Staff form
+        $('#addStaffBtn').on('click', function() {
+            $('#addStaffModal').modal('show');
+        });
+
+        // Submit Add Hotel form
+        $('#addHotelForm').on('submit', function(e) {
+            e.preventDefault();
+            addHotel();
+        });
+
+        $('#addStaffModal').on('show.bs.modal', function () {
+            loadHotelsForStaffModal();
+        });
+
+        // Submit Add Staff form
+        $('#addStaffForm').on('submit', function(e) {
+            e.preventDefault();
+            addStaff();
         });
     });
 
@@ -1435,44 +1566,6 @@
     }
 
     // Report lost item
-    // function reportLostItem() {
-    //     if (!currentUser || !jwtToken) {
-    //         showError('Please login first to report a lost item.');
-    //         $('#reportModal').modal('hide');
-    //         $('#loginModal').modal('show');
-    //         return;
-    //     }
-    //
-    //     const itemData = {
-    //         guestId: currentUser.guestId || currentUser.id,
-    //         title: $('#itemName').val(),
-    //         description: $('#itemDescription').val(),
-    //         dateLost: $('#lostDate').val(),
-    //         locationLost: $('#lostLocation').val(),
-    //         imagePath: '' // You would handle file upload separately
-    //     };
-    //
-    //     $.ajax({
-    //         url: API_BASE_URL + '/lost-items',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         headers: {
-    //             'Authorization': 'Bearer ' + jwtToken
-    //         },
-    //         data: JSON.stringify(itemData),
-    //         success: function(response) {
-    //             if (response.status === 200) {
-    //                 showSuccess('Item reported successfully!');
-    //                 $('#reportModal').modal('hide');
-    //                 loadDashboardData(); // Refresh data
-    //             }
-    //         },
-    //         error: function(xhr) {
-    //             showError('Failed to report item: ' + (xhr.responseJSON?.message || 'Unknown error'));
-    //         }
-    //     });
-    // }
-
     async function reportLostItem() {
         if (!currentUser || !jwtToken) {
             showError('Please login first to report a lost item.');
@@ -1481,7 +1574,7 @@
             return;
         }
 
-        const file = $('#lostItemImage')[0]?.files[0]; // add input for image in your form
+        const file = $('#lostItemImage')[0]?.files[0]; // add input for image in form
         let imageUrl = '';
 
         if (file) {
@@ -1518,51 +1611,6 @@
     }
 
     // Report found item
-    // function reportFoundItem() {
-    //     if (!currentUser || !jwtToken) {
-    //         showError('Please login first to report a found item.');
-    //         $('#foundModal').modal('hide');
-    //         $('#loginModal').modal('show');
-    //         return;
-    //     }
-    //
-    //     // Only staff can report found items
-    //     if (!currentUser.role || currentUser.role === 'GUEST') {
-    //         showError('Only hotel staff can report found items.');
-    //         $('#foundModal').modal('hide');
-    //         return;
-    //     }
-    //
-    //     const itemData = {
-    //         staffId: currentUser.staffId || currentUser.id,
-    //         title: $('#foundItemName').val(),
-    //         description: $('#foundItemDescription').val(),
-    //         foundDate: $('#foundDate').val(),
-    //         locationFound: $('#foundLocation').val(),
-    //         imagePath: '' // You would handle file upload separately
-    //     };
-    //
-    //     $.ajax({
-    //         url: API_BASE_URL + '/found-items',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         headers: {
-    //             'Authorization': 'Bearer ' + jwtToken
-    //         },
-    //         data: JSON.stringify(itemData),
-    //         success: function(response) {
-    //             if (response.status === 200) {
-    //                 showSuccess('Found item reported successfully!');
-    //                 $('#foundModal').modal('hide');
-    //                 loadDashboardData(); // Refresh data
-    //             }
-    //         },
-    //         error: function(xhr) {
-    //             showError('Failed to report found item: ' + (xhr.responseJSON?.message || 'Unknown error'));
-    //         }
-    //     });
-    // }
-
     async function reportFoundItem() {
         if (!currentUser || !jwtToken) {
             showError('Please login first to report a found item.');
@@ -1614,41 +1662,6 @@
     }
 
     // Submit claim for an item
-    // function submitClaim() {
-    //     const itemId = $('#claimItemId').val();
-    //     const message = $('#claimMessage').val();
-    //     const proofImage = $('#claimProof')[0].files[0];
-    //
-    //     // Create form data for file upload
-    //     const formData = new FormData();
-    //     formData.append('foundItemId', itemId);
-    //     formData.append('message', message);
-    //     if (proofImage) {
-    //         formData.append('proofImage', proofImage);
-    //     }
-    //
-    //     $.ajax({
-    //         url: API_BASE_URL + '/claims',
-    //         type: 'POST',
-    //         headers: {
-    //             'Authorization': 'Bearer ' + jwtToken
-    //         },
-    //         data: formData,
-    //         processData: false,
-    //         contentType: false,
-    //         success: function(response) {
-    //             if (response.status === 200) {
-    //                 showSuccess('Claim submitted successfully! The admin will review your request.');
-    //                 $('#claimItemModal').modal('hide');
-    //                 loadDashboardData(); // Refresh data
-    //             }
-    //         },
-    //         error: function(xhr) {
-    //             showError('Failed to submit claim: ' + (xhr.responseJSON?.message || 'Unknown error'));
-    //         }
-    //     });
-    // }
-
     function submitClaim() {
         const itemId = $('#claimItemId').val();
         const message = $('#claimMessage').val();
@@ -2389,12 +2402,6 @@
         });
     }
 
-    // // View item details
-    // function viewItem(itemId, type) {
-    //     // In a real implementation, you would fetch item details and show them
-    //     showInfo(`Viewing ${type} item #${itemId}`);
-    // }
-
     // View item details
     function viewItem(itemId, type) {
         $.ajax({
@@ -2482,17 +2489,64 @@
 
     // Edit item
     function editItem(itemId, type) {
-        // In a real implementation, you would fetch item details and show an edit form
-        showInfo(`Editing ${type} item #${itemId}`);
+        $.ajax({
+            url: API_BASE_URL + `/${type}-items/${itemId}`,
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            success: function(response) {
+                if (response.status === 200) {
+                    const item = response.data;
+
+                    // Fill modal form with item details
+                    $('#editItemId').val(itemId);
+                    $('#editItemType').val(type);
+                    $('#editItemTitle').val(item.title);
+                    $('#editItemDescription').val(item.description);
+                    $('#editItemDate').val(type === 'lost' ? item.dateLost : item.foundDate);
+                    $('#editItemLocation').val(type === 'lost' ? item.locationLost : item.locationFound);
+
+                    // Show modal
+                    $('#editItemModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                showError(`Failed to load ${type} item details`);
+            }
+        });
     }
 
-    // // Archive item
-    // function archiveItem(itemId, type) {
-    //     showConfirm(`Are you sure you want to archive this ${type} item?`, function() {
-    //         // In a real implementation, you would make an API call to archive the item
-    //         showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item archived successfully!`);
-    //     });
-    // }
+    // Save edited item
+    $('#editItemForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const itemId = $('#editItemId').val();
+        const type = $('#editItemType').val();
+
+        const updatedData = {
+            title: $('#editItemTitle').val(),
+            description: $('#editItemDescription').val(),
+            location: $('#editItemLocation').val(),
+            date: $('#editItemDate').val()
+        };
+
+        $.ajax({
+            url: API_BASE_URL + `/${type}-items/${itemId}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            data: JSON.stringify(updatedData),
+            success: function(response) {
+                if (response.status === 200) {
+                    showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item updated successfully!`);
+                    $('#editItemModal').modal('hide');
+                    loadDashboardData();
+                }
+            },
+            error: function(xhr) {
+                showError(`Failed to update ${type} item`);
+            }
+        });
+    });
 
     // Archive item
     function archiveItem(itemId, type) {
@@ -2518,10 +2572,63 @@
     }
 
     // Match item
-    function matchItem(itemId) {
-        // In a real implementation, you would show a form to match the found item with a lost item
-        showInfo(`Matching found item #${itemId}`);
+    function matchItem(foundItemId) {
+        // Fetch all lost items
+        $.ajax({
+            url: API_BASE_URL + '/lost-items',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            success: function(response) {
+                if (response.status === 200) {
+                    const lostItems = response.data;
+
+                    // Populate dropdown
+                    const select = $('#matchLostItemSelect');
+                    select.empty();
+                    lostItems.forEach(item => {
+                        select.append(`<option value="${item.lostId}">${item.title} - ${item.guestName}</option>`);
+                    });
+
+                    // Store the found item id
+                    $('#matchFoundItemId').val(foundItemId);
+
+                    // Show modal
+                    $('#matchItemModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to load lost items for matching');
+            }
+        });
     }
+
+    // Submit match
+    $('#matchItemForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const foundItemId = $('#matchFoundItemId').val();
+        const lostItemId = $('#matchLostItemSelect').val();
+
+        const matchData = { foundItemId, lostItemId };
+
+        $.ajax({
+            url: API_BASE_URL + '/matches',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            data: JSON.stringify(matchData),
+            success: function(response) {
+                if (response.status === 200) {
+                    showSuccess('Item matched successfully!');
+                    $('#matchItemModal').modal('hide');
+                    loadDashboardData();
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to match item');
+            }
+        });
+    });
 
     // Claim item
     function claimItem(itemId, itemName) {
@@ -2671,6 +2778,115 @@
             title: message,
             showConfirmButton: false,
             timer: 2000
+        });
+    }
+
+    // Add hotel
+    function addHotel() {
+        const name = $('#hotelName').val();
+        const address = $('#hotelAddress').val();
+        const phone = $('#hotelPhone').val();
+
+        const hotelData = { name, address, phone };
+
+        $.ajax({
+            url: API_BASE_URL + '/hotels',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            data: JSON.stringify(hotelData),
+            success: function(response) {
+                if (response.status === 200) {
+                    showSuccess('Hotel added successfully!');
+                    $('#addHotelModal').modal('hide');
+                    loadAdminData(); // reload table
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to add hotel: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    }
+
+    // Add staff
+    // function addStaff() {
+    //     const staffData = {
+    //         name: $('#staffName').val(),
+    //         email: $('#staffEmail').val(),
+    //         phone: $('#staffPhone').val(),
+    //         password: $('#staffPassword').val(),
+    //         role: $('#staffRole').val(),
+    //         hotelId: parseInt($('#staffHotel').val())
+    //     };
+    //
+    //     $.ajax({
+    //         url: API_BASE_URL + '/auth/register',
+    //         type: 'POST',
+    //         contentType: 'application/json',
+    //         headers: { 'Authorization': 'Bearer ' + jwtToken },
+    //         data: JSON.stringify(staffData),
+    //         success: function(response) {
+    //             if (response.status === 200) {
+    //                 showSuccess('Staff added successfully!');
+    //                 $('#addStaffModal').modal('hide');
+    //                 loadAdminData();
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             showError('Failed to add staff: ' + (xhr.responseJSON?.message || 'Unknown error'));
+    //         }
+    //     });
+    // }
+
+    $('#addStaffForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const staffData = {
+            name: $('#staffName').val(),
+            email: $('#staffEmail').val(),
+            phone: $('#staffPhone').val(),
+            password: $('#staffPassword').val(),
+            role: $('#staffRole').val(),
+            hotelId: parseInt($('#staffHotelId').val(), 10)
+        };
+
+        $.ajax({
+            url: API_BASE_URL + '/auth/register',
+            type: 'POST',
+            contentType: 'application/json',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            data: JSON.stringify(staffData),
+            success: function(response) {
+                showSuccess('Staff added successfully!');
+                $('#addStaffModal').modal('hide');
+                loadAdminData();
+            },
+            error: function(xhr) {
+                showError('Failed to add staff: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
+        });
+    });
+
+    function loadHotelsForStaffModal() {
+        $.ajax({
+            url: API_BASE_URL + '/hotels',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            success: function(response) {
+                if (response.status === 200 && response.data) {
+                    const hotels = response.data;
+                    const $select = $('#staffHotelId');
+                    $select.empty();
+                    $select.append('<option value="">Select Hotel</option>');
+
+                    hotels.forEach(hotel => {
+                        $select.append(`<option value="${hotel.hotelId}">${hotel.name}</option>`);
+                    });
+                }
+            },
+            error: function(xhr) {
+                showError('Failed to load hotels: ' + (xhr.responseJSON?.message || 'Unknown error'));
+            }
         });
     }
 

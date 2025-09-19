@@ -108,4 +108,61 @@ public class ClaimServiceImpl implements ClaimService {
             foundItemRepository.save(found);
         }
     }
+
+    @Override
+    @Transactional
+    public ClaimResponseDTO approveClaim(Long claimId) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with id: " + claimId));
+
+        if (claim.getStatus() != Claim.Status.PENDING) {
+            throw new IllegalStateException("Only pending claims can be approved");
+        }
+
+        claim.setStatus(Claim.Status.APPROVED);
+        claimRepository.save(claim);
+
+        // Update found item
+        FoundItem foundItem = claim.getFoundItem();
+        foundItem.setClaimed(true);
+        foundItem.setStatus(FoundItem.Status.CLAIMED);
+        foundItemRepository.save(foundItem);
+
+        // Notify guest
+        notificationService.sendNotification(
+                claim.getGuest(),
+                "Your claim for the item '" + foundItem.getTitle() + "' has been approved!"
+        );
+
+        return modelMapper.map(claim, ClaimResponseDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public ClaimResponseDTO rejectClaim(Long claimId, String reason) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with id: " + claimId));
+
+        if (claim.getStatus() != Claim.Status.PENDING) {
+            throw new IllegalStateException("Only pending claims can be rejected");
+        }
+
+        claim.setStatus(Claim.Status.REJECTED);
+        claimRepository.save(claim);
+
+        // Reset the found item so it can be claimed again
+        FoundItem foundItem = claim.getFoundItem();
+        foundItem.setClaimed(false);
+        foundItem.setStatus(FoundItem.Status.UNCLAIMED);
+        foundItemRepository.save(foundItem);
+
+        // Notify guest
+        notificationService.sendNotification(
+                claim.getGuest(),
+                "Your claim for the item '" + foundItem.getTitle() + "' has been rejected. Reason: " + reason
+        );
+
+        return modelMapper.map(claim, ClaimResponseDTO.class);
+    }
+
 }

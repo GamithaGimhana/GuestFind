@@ -45,6 +45,23 @@ public class ClaimController {
         return ResponseEntity.ok(new ApiResponseDTO(200, "Replied", null));
     }
 
+    @PutMapping("/{id}/approve")
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> approveClaim(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                new ApiResponseDTO(200, "Claim Approved", claimService.approveClaim(id))
+        );
+    }
+
+    @PutMapping("/{id}/reject")
+    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> rejectClaim(@PathVariable Long id, @RequestParam String reason) {
+        return ResponseEntity.ok(
+                new ApiResponseDTO(200, "Claim Rejected", claimService.rejectClaim(id, reason))
+        );
+    }
+
+
     // small DTO for reply
     public static class ReplyDTO {
         private String message;

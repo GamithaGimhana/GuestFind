@@ -51,5 +51,27 @@ public class FoundItemController {
         foundItemService.archiveFoundItem(id);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Archived", null));
     }
+
+    // Staff or Admin can edit found item
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<ApiResponseDTO> updateFoundItem(
+            @PathVariable Long id, @RequestBody FoundItemRequestDTO dto) {
+        return ResponseEntity.ok(
+                new ApiResponseDTO(200, "Updated", foundItemService.updateFoundItem(id, dto))
+        );
+    }
+
+    // Match a found item with a lost item
+    @PostMapping("/matches")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<ApiResponseDTO> matchItem(
+            @RequestParam Long foundItemId,
+            @RequestParam Long lostItemId) {
+        return ResponseEntity.ok(
+                new ApiResponseDTO(200, "Matched", foundItemService.matchItem(foundItemId, lostItemId))
+        );
+    }
+
 }
 

@@ -2,8 +2,6 @@ package com.gdse.aad.backend.service;
 
 import com.gdse.aad.backend.dto.FoundItemRequestDTO;
 import com.gdse.aad.backend.dto.FoundItemResponseDTO;
-
-import java.io.IOException;
 import java.util.List;
 
 public interface FoundItemService {
@@ -11,5 +9,7 @@ public interface FoundItemService {
     List<FoundItemResponseDTO> getAllFoundItems();
     List<FoundItemResponseDTO> getUnclaimedFoundItems();
     void archiveFoundItem(Long id);
+    FoundItemResponseDTO updateFoundItem(Long id, FoundItemRequestDTO dto);
+    String matchItem(Long foundItemId, Long lostItemId);
 
 }

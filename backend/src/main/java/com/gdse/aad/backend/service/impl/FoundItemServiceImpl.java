@@ -19,7 +19,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -108,5 +107,51 @@ public class FoundItemServiceImpl implements FoundItemService {
         item.setStatus(FoundItem.Status.ARCHIVED);
         foundItemRepository.save(item);
     }
-}
 
+    @Transactional
+    @Override
+    public FoundItemResponseDTO updateFoundItem(Long id, FoundItemRequestDTO dto) {
+        FoundItem existing = foundItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Found item not found with id: " + id));
+
+        existing.setTitle(dto.getTitle());
+        existing.setDescription(dto.getDescription());
+        existing.setImagePath(dto.getImagePath());
+        // optionally: allow status/location updates too if you have them in DTO
+
+        FoundItem updated = foundItemRepository.save(existing);
+
+        FoundItemResponseDTO resp = modelMapper.map(updated, FoundItemResponseDTO.class);
+        resp.setStaffName(updated.getStaff().getName());
+        return resp;
+    }
+
+    @Transactional
+    @Override
+    public String matchItem(Long foundItemId, Long lostItemId) {
+        FoundItem found = foundItemRepository.findById(foundItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Found item not found with id: " + foundItemId));
+        LostItem lost = lostItemRepository.findById(lostItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lost item not found with id: " + lostItemId));
+
+        // Create match record
+        MatchRecord record = MatchRecord.builder()
+                .foundItem(found)
+                .lostItem(lost)
+                .build();
+        matchRecordRepository.save(record);
+
+        // Update statuses
+        found.setStatus(FoundItem.Status.MATCHED);
+        lost.setStatus(LostItem.Status.MATCHED);
+        foundItemRepository.save(found);
+        lostItemRepository.save(lost);
+
+        // Notify guest
+        notificationService.sendNotification(lost.getGuest(),
+                "Good news! A staff member matched your lost item with: " + found.getTitle());
+
+        return "Match successful";
+    }
+
+}
