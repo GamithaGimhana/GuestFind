@@ -1,7 +1,6 @@
 package com.gdse.aad.backend.dto;
 
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,10 +9,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ClaimResponseDTO {
-    private Long id;
+    private Long claimId;          // instead of id
     private Long foundItemId;
+    private String foundItemTitle;
+    private String foundItemImage;
     private Long guestId;
     private String guestName;
+    private String guestEmail;
     private String message;
     private String proofImagePath;
     private String status;

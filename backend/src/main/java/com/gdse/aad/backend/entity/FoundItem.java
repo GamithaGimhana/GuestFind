@@ -41,6 +41,10 @@ public class FoundItem {
     @Column(length = 255)
     private String location;
 
+    @ManyToOne
+    @JoinColumn(name = "claimed_by_guest_id")
+    private Guest claimedBy;
+
     @Column(nullable = false)
     private boolean claimed = false;
 

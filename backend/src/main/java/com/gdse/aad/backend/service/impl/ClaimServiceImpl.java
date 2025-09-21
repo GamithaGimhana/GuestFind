@@ -14,12 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,42 +29,30 @@ public class ClaimServiceImpl implements ClaimService {
 
     private final String UPLOAD_DIR = "./uploads/claims/";
 
-    @Override
     @Transactional
-    public ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage) {
+    @Override
+    public ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, String proofImageUrl) {
         Guest guest = guestRepository.findByEmail(guestEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found"));
 
         FoundItem foundItem = foundItemRepository.findById(foundItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Found item not found"));
 
-        // save image if exists
-        String imagePath = null;
-        if (proofImage != null && !proofImage.isEmpty()) {
-            try {
-                File dir = new File(UPLOAD_DIR);
-                if (!dir.exists()) dir.mkdirs();
-                String fileName = UUID.randomUUID() + "_" + proofImage.getOriginalFilename();
-                File dest = new File(dir, fileName);
-                proofImage.transferTo(dest);
-                imagePath = "/uploads/claims/" + fileName;
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to save proof image", e);
-            }
+        if (foundItem.isClaimed()) {
+            throw new IllegalStateException("This item has already been claimed.");
         }
 
         Claim claim = Claim.builder()
                 .foundItem(foundItem)
                 .guest(guest)
                 .message(message)
-                .proofImagePath(imagePath)
+                .proofImagePath(proofImageUrl)
                 .status(Claim.Status.PENDING)
                 .build();
 
         Claim saved = claimRepository.save(claim);
 
-        // notify admins/staff (simple)
-        notificationService.sendNotification(guest, "Your claim has been submitted for item: " + foundItem.getTitle());
+        notificationService.sendNotification(guest, "Your claim for item '" + foundItem.getTitle() + "' has been submitted!");
 
         ClaimResponseDTO dto = modelMapper.map(saved, ClaimResponseDTO.class);
         dto.setFoundItemId(foundItemId);
@@ -126,6 +110,7 @@ public class ClaimServiceImpl implements ClaimService {
         FoundItem foundItem = claim.getFoundItem();
         foundItem.setClaimed(true);
         foundItem.setStatus(FoundItem.Status.CLAIMED);
+        foundItem.setClaimedBy(claim.getGuest()); // link to guest
         foundItemRepository.save(foundItem);
 
         // Notify guest
@@ -154,6 +139,7 @@ public class ClaimServiceImpl implements ClaimService {
         FoundItem foundItem = claim.getFoundItem();
         foundItem.setClaimed(false);
         foundItem.setStatus(FoundItem.Status.UNCLAIMED);
+        foundItem.setClaimedBy(null);
         foundItemRepository.save(foundItem);
 
         // Notify guest
@@ -163,6 +149,22 @@ public class ClaimServiceImpl implements ClaimService {
         );
 
         return modelMapper.map(claim, ClaimResponseDTO.class);
+    }
+
+    @Override
+    public ClaimResponseDTO getClaimById(Long id) {
+        Claim claim = claimRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Claim not found with id: " + id));
+
+        ClaimResponseDTO dto = modelMapper.map(claim, ClaimResponseDTO.class);
+        dto.setFoundItemId(claim.getFoundItem().getFoundId());
+        dto.setFoundItemTitle(claim.getFoundItem().getTitle());
+        dto.setFoundItemImage(claim.getFoundItem().getImagePath());
+        dto.setGuestId(claim.getGuest().getGuestId());
+        dto.setGuestName(claim.getGuest().getName());
+        dto.setGuestEmail(claim.getGuest().getEmail());
+
+        return dto;
     }
 
 }

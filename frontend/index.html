@@ -4,372 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuestFind - Premium Lost & Found System</title>
-    <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <style>
-        :root {
-            --navy-blue: #0a192f;
-            --navy-light: #112240;
-            --gold: #d4af37;
-            --gold-light: #f1e5ac;
-            --white: #ffffff;
-            --off-white: #f8f9fa;
-            --text-dark: #333333;
-            --text-light: #e6f1ff;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        body {
-            background-color: var(--off-white);
-            color: var(--text-dark);
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .navbar {
-            background-color: var(--navy-blue);
-            box-shadow: var(--shadow);
-            padding: 0.8rem 0;
-        }
-
-        .navbar-brand {
-            color: var(--gold) !important;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-        .navbar-nav .nav-link {
-            color: var(--text-light) !important;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            transition: var(--transition);
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: var(--gold) !important;
-        }
-
-        .navbar-nav .nav-link.active {
-            color: var(--gold) !important;
-            border-bottom: 2px solid var(--gold);
-        }
-
-        .btn-primary {
-            background-color: var(--gold);
-            border-color: var(--gold);
-            color: var(--navy-blue);
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--navy-blue);
-            border-color: var(--navy-blue);
-            color: var(--gold);
-            transform: translateY(-2px);
-        }
-
-        .btn-outline-primary {
-            border-color: var(--gold);
-            color: var(--gold);
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-outline-primary:hover {
-            background-color: var(--gold);
-            color: var(--navy-blue);
-            transform: translateY(-2px);
-        }
-
-        .hero-section {
-            background: linear-gradient(rgba(10, 25, 47, 0.9), rgba(10, 25, 47, 0.85)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
-            background-size: cover;
-            background-position: center;
-            color: var(--text-light);
-            padding: 6rem 0;
-            position: relative;
-        }
-
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, var(--off-white), transparent);
-        }
-
-        .feature-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            height: 100%;
-            background: var(--white);
-            overflow: hidden;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 2.8rem;
-            color: var(--gold);
-            margin-bottom: 1.5rem;
-            transition: var(--transition);
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1);
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--navy-blue), var(--navy-light));
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .status-badge {
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-matched {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-closed {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-unclaimed {
-            background: #e2e3e5;
-            color: #383d41;
-        }
-
-        .status-claimed {
-            background: #cce7ff;
-            color: #004085;
-        }
-
-        .dashboard-section {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            margin-bottom: 2.5rem;
-            transition: var(--transition);
-        }
-
-        .dashboard-section:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        footer {
-            background-color: var(--navy-blue);
-            color: var(--text-light);
-            padding: 4rem 0 2rem;
-        }
-
-        .section-title {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 2.5rem;
-            font-weight: 700;
-            color: var(--navy-blue);
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 0;
-            width: 70px;
-            height: 4px;
-            background-color: var(--gold);
-            border-radius: 2px;
-        }
-
-        .card-title {
-            color: var(--navy-blue);
-            font-weight: 600;
-        }
-
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .modal-header {
-            border-bottom: 2px solid var(--gold);
-            background-color: var(--navy-blue);
-            color: var(--white);
-            padding: 1.2rem 1.5rem;
-        }
-
-        .modal-header .btn-close {
-            filter: invert(1);
-            opacity: 0.8;
-            transition: var(--transition);
-        }
-
-        .modal-header .btn-close:hover {
-            opacity: 1;
-            transform: rotate(90deg);
-        }
-
-        .form-control:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .profile-card {
-            background: var(--white);
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: var(--navy-blue);
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin-right: 1.5rem;
-        }
-
-        .action-btn {
-            transition: var(--transition);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .nav-pills .nav-link.active {
-            background-color: var(--gold);
-            color: var(--navy-blue);
-            font-weight: 600;
-        }
-
-        .nav-pills .nav-link {
-            color: var(--navy-blue);
-            font-weight: 500;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: rgba(212, 175, 55, 0.1);
-        }
-
-        .claim-proof {
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            margin: 1rem 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .claim-proof:hover {
-            border-color: var(--gold);
-            background-color: rgba(212, 175, 55, 0.05);
-        }
-
-        .admin-panel {
-            background: linear-gradient(135deg, var(--navy-light), var(--navy-blue));
-            border-radius: 15px;
-            padding: 2rem;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-        }
-
-        .admin-panel h3 {
-            color: var(--gold);
-            margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 4rem 0;
-            }
-
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .profile-avatar {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style/index-style.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -682,6 +321,30 @@
                 </table>
             </div>
         </div>
+
+        <!-- Delivery Requests Section (Admin only) -->
+        <div class="dashboard-section d-none" id="deliveryRequestsSection">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Delivery Requests</h3>
+                <span class="badge bg-primary" id="deliveryRequestsCount">0</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover" id="deliveryRequestsTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Lost Item</th>
+                        <th>Method</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -1163,10 +826,41 @@
     </div>
 </div>
 
-<!-- Bootstrap JS and dependencies -->
+<!-- Delivery Request Modal -->
+<div class="modal fade" id="deliveryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Request Delivery</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="deliveryForm">
+                    <input type="hidden" id="deliveryLostItemId">
+
+                    <div class="mb-3">
+                        <label for="deliveryMethod" class="form-label">Method</label>
+                        <select id="deliveryMethod" class="form-select" required>
+                            <option value="">Select</option>
+                            <option value="PICKUP">Pickup at Hotel</option>
+                            <option value="DELIVERY">Delivery to Address</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 d-none" id="deliveryAddressGroup">
+                        <label for="deliveryAddress" class="form-label">Delivery Address</label>
+                        <textarea id="deliveryAddress" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script>
@@ -1189,33 +883,10 @@
         }
     });
 
-    function setCookie(name, value, days) {
-        let expires = "";
-        if (days) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days*24*60*60*1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
-    }
-
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
-        return null;
-    }
-
-    function deleteCookie(name) {
-        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    }
-
     // Check if user is already logged in
-    $(document).ready(function() {
-        // const savedToken = localStorage.getItem('jwtToken');
-        // const savedUser = localStorage.getItem('currentUser');
-        const savedToken = getCookie('jwtToken');
-        const savedUser = getCookie('currentUser');
+    $(document).ready(function () {
+        const savedToken = localStorage.getItem('jwtToken');
+        const savedUser = localStorage.getItem('currentUser');
 
         if (savedToken && savedUser) {
             jwtToken = savedToken;
@@ -1225,99 +896,99 @@
         }
 
         // Login form submission
-        $('#loginForm').on('submit', function(e) {
+        $('#loginForm').on('submit', function (e) {
             e.preventDefault();
             loginUser();
         });
 
         // Register form submission
-        $('#registerForm').on('submit', function(e) {
+        $('#registerForm').on('submit', function (e) {
             e.preventDefault();
             registerUser();
         });
 
         // Report form submission
-        $('#reportForm').on('submit', function(e) {
+        $('#reportForm').on('submit', function (e) {
             e.preventDefault();
             reportLostItem();
         });
 
         // Found item form submission
-        $('#foundForm').on('submit', function(e) {
+        $('#foundForm').on('submit', function (e) {
             e.preventDefault();
             reportFoundItem();
         });
 
         // Profile form submission
-        $('#profileForm').on('submit', function(e) {
+        $('#profileForm').on('submit', function (e) {
             e.preventDefault();
             updateProfile();
         });
 
         // Security form submission
-        $('#securityForm').on('submit', function(e) {
+        $('#securityForm').on('submit', function (e) {
             e.preventDefault();
             updatePassword();
         });
 
         // Claim form submission
-        $('#claimForm').on('submit', function(e) {
+        $('#claimForm').on('submit', function (e) {
             e.preventDefault();
             submitClaim();
         });
 
         // Logout button
-        $('#logoutBtn').on('click', function(e) {
+        $('#logoutBtn').on('click', function (e) {
             e.preventDefault();
             logoutUser();
         });
 
         // Notifications modal
-        $('#notificationsModal').on('show.bs.modal', function() {
+        $('#notificationsModal').on('show.bs.modal', function () {
             loadNotifications();
         });
 
         // Mark all as read button
-        $('#markAllAsReadBtn').on('click', function() {
+        $('#markAllAsReadBtn').on('click', function () {
             markAllNotificationsAsRead();
         });
 
         // Profile link
-        $('#profileLink').on('click', function(e) {
+        $('#profileLink').on('click', function (e) {
             e.preventDefault();
             showProfileSection();
         });
 
         // Dashboard link
-        $('#dashboardLink').on('click', function(e) {
+        $('#dashboardLink').on('click', function (e) {
             e.preventDefault();
             showDashboardSection();
         });
 
         // Admin link
-        $('#adminLink').on('click', function(e) {
+        $('#adminLink').on('click', function (e) {
             e.preventDefault();
             showAdminSection();
         });
 
         // Home link
-        $('#homeLink').on('click', function(e) {
+        $('#homeLink').on('click', function (e) {
             e.preventDefault();
             showHomeSection();
         });
 
         // Proof upload area
-        $('#proofUploadArea').on('click', function() {
+        $('#proofUploadArea').on('click', function () {
             $('#claimProof').click();
         });
 
         // Claim proof change
-        $('#claimProof').on('change', function(e) {
+        $('#claimProof').on('change', function (e) {
             handleProofUpload(e);
         });
 
         // Filter buttons
-        $('[data-filter]').on('click', function() {
+        $('[data-filter]').on('click', function () {
             const filter = $(this).data('filter');
             $('[data-filter]').removeClass('active');
             $(this).addClass('active');
@@ -1325,17 +996,17 @@
         });
 
         // Open Add Hotel form
-        $('#addHotelBtn').on('click', function() {
+        $('#addHotelBtn').on('click', function () {
             $('#addHotelModal').modal('show');
         });
 
         // Open Add Staff form
-        $('#addStaffBtn').on('click', function() {
+        $('#addStaffBtn').on('click', function () {
             $('#addStaffModal').modal('show');
         });
 
         // Submit Add Hotel form
-        $('#addHotelForm').on('submit', function(e) {
+        $('#addHotelForm').on('submit', function (e) {
             e.preventDefault();
             addHotel();
         });
@@ -1345,7 +1016,7 @@
         });
 
         // Submit Add Staff form
-        $('#addStaffForm').on('submit', function(e) {
+        $('#addStaffForm').on('submit', function (e) {
             e.preventDefault();
             addStaff();
         });
@@ -1392,24 +1063,22 @@
 
         const endpoint = isStaff ? '/auth/login' : '/auth/guest/login';
         const credentials = isStaff ?
-            { email: email, password: password } :
-            { email: email, password: password };
+            {email: email, password: password} :
+            {email: email, password: password};
 
         $.ajax({
             url: API_BASE_URL + endpoint,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(credentials),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     jwtToken = response.data.token;
                     currentUser = response.data.user;
 
                     // Store in localStorage
-                    // localStorage.setItem('jwtToken', jwtToken);
-                    // localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    setCookie('jwtToken', jwtToken, 7); // 7 days expiry
-                    setCookie('currentUser', JSON.stringify(currentUser), 7);
+                    localStorage.setItem('jwtToken', jwtToken);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
                     // Update UI
                     updateUIAfterLogin();
@@ -1422,7 +1091,7 @@
                     showSuccess('Login successful!');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Login failed: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -1447,14 +1116,14 @@
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(userData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showSuccess('Registration successful! Please login.');
                     $('#registerModal').modal('hide');
                     $('#loginModal').modal('show');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Registration failed: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -1483,13 +1152,13 @@
                 'Authorization': 'Bearer ' + jwtToken
             },
             data: JSON.stringify(profileData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     // Update current user data
                     currentUser.name = name;
                     currentUser.phone = phone;
                     currentUser.email = email;
-                    setCookie('currentUser', JSON.stringify(currentUser), 7);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
                     // Update UI
                     $('#profileUserName').text(name);
@@ -1498,7 +1167,7 @@
                     showSuccess('Profile updated successfully!');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to update profile: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -1531,13 +1200,13 @@
                 'Authorization': 'Bearer ' + jwtToken
             },
             data: JSON.stringify(passwordData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showSuccess('Password updated successfully!');
                     $('#securityForm')[0].reset();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to update password: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -1624,16 +1293,16 @@
             url: API_BASE_URL + '/lost-items',
             type: 'POST',
             contentType: 'application/json',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             data: JSON.stringify(itemData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200 || response.status === 201) {
                     showSuccess('Item reported successfully!');
                     $('#reportModal').modal('hide');
                     loadDashboardData();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error("Lost Item Error:", xhr);
                 showError('Failed to report item: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
@@ -1679,16 +1348,16 @@
             url: API_BASE_URL + '/found-items',
             type: 'POST',
             contentType: 'application/json',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             data: JSON.stringify(itemData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200 || response.status === 201) {
                     showSuccess('Found item reported successfully!');
                     $('#foundModal').modal('hide');
                     loadDashboardData();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error("Found Item Error:", xhr);
                 showError('Failed to report found item: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
@@ -1715,14 +1384,14 @@
                 'Authorization': 'Bearer ' + jwtToken
             },
             data: JSON.stringify(claimData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showSuccess('Claim submitted successfully! The admin will review your request.');
                     $('#claimItemModal').modal('hide');
                     loadDashboardData();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to submit claim: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -1751,7 +1420,7 @@
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
+            success: function (response) {
                 if (response && response.data && response.data.url) {
                     const imageUrl = response.data.url;
 
@@ -1771,7 +1440,7 @@
                 `);
                 }
             },
-            error: function(err) {
+            error: function (err) {
                 console.error("Upload failed:", err);
                 $('#proofPreview').html(`
                 <div class="alert alert-danger">Error uploading file.</div>
@@ -1822,7 +1491,7 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     const profile = response.data;
 
@@ -1836,7 +1505,7 @@
                     $('#profilePhone').val(profile.phone || '');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load profile:', xhr);
             }
         });
@@ -1877,12 +1546,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateLostItemsTable(response.data);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load lost items:', xhr);
                 showError('Failed to load lost items');
             }
@@ -1895,12 +1564,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateFoundItemsTable(response.data);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load found items:', xhr);
                 showError('Failed to load found items');
             }
@@ -1909,6 +1578,23 @@
         // Load stats
         loadAdminStats();
 
+        // Load deliveries (admin only)
+        $.ajax({
+            url: API_BASE_URL + '/deliveries',
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            success: function (response) {
+                if (response.status === 200) {
+                    $("#deliveryRequestsSection").removeClass("d-none");
+                    populateDeliveryRequestsTable(response.data);
+                    $("#deliveryRequestsCount").text(response.data.length);
+                }
+            },
+            error: function (xhr) {
+                console.error('Failed to load deliveries:', xhr);
+            }
+        });
+
         // Load guests (admin only)
         $.ajax({
             url: API_BASE_URL + '/guests',
@@ -1916,12 +1602,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     console.log('Guests loaded:', response.data.length);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load guests:', xhr);
             }
         });
@@ -1933,12 +1619,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateHotelsTable(response.data);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load hotels:', xhr);
             }
         });
@@ -1950,12 +1636,13 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateClaimRequestsTable(response.data);
                 }
+                // loadClaimRequests();
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load claims:', xhr);
             }
         });
@@ -1967,12 +1654,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateStaffTable(response.data);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load staff:', xhr);
             }
         });
@@ -1987,12 +1674,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateLostItemsTable(response.data);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load lost items:', xhr);
                 showError('Failed to load lost items');
             }
@@ -2005,12 +1692,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     populateFoundItemsTable(response.data);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load found items:', xhr);
                 showError('Failed to load found items');
             }
@@ -2029,7 +1716,7 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     // For guests, we need to filter by their ID
                     const guestItems = response.data.filter(item => {
@@ -2041,7 +1728,7 @@
                     populateLostItemsTable(guestItems);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load lost items:', xhr);
                 showError('Failed to load your lost items');
             }
@@ -2055,7 +1742,7 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     // Filter to show only unclaimed items for guests
                     const unclaimedItems = response.data.filter(item =>
@@ -2064,7 +1751,7 @@
                     populateFoundItemsTable(unclaimedItems);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to load found items:', xhr);
             }
         });
@@ -2077,6 +1764,117 @@
         // Load guest stats
         loadGuestStats();
     }
+
+    function loadDeliveries() {
+        $.ajax({
+            url: API_BASE_URL + "/deliveries",
+            type: "GET",
+            headers: { "Authorization": "Bearer " + jwtToken },
+            success: function(response) {
+                if (response.status === 200) {
+                    populateDeliveryRequestsTable(response.data);
+                }
+            },
+            error: function(xhr) {
+                console.error("Failed to load deliveries:", xhr);
+            }
+        });
+    }
+
+    function populateDeliveryRequestsTable(deliveries) {
+        const tbody = $("#deliveryRequestsTable tbody");
+        tbody.empty();
+
+        if (!deliveries || deliveries.length === 0) {
+            tbody.append('<tr><td colspan="6" class="text-center py-4">No delivery requests</td></tr>');
+            $("#deliveryRequestsCount").text(0);
+            return;
+        }
+
+        deliveries.forEach(d => {
+            tbody.append(`
+            <tr>
+                <td>${d.deliveryId}</td>
+                <td>${d.lostItemId}</td>
+                <td>${d.method}</td>
+                <td>${d.address || "-"}</td>
+                <td><span class="status-badge ${getStatusClass(d.status)}">${d.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-success update-delivery" data-id="${d.deliveryId}" data-status="SHIPPED">Mark Shipped</button>
+                    <button class="btn btn-sm btn-primary update-delivery" data-id="${d.deliveryId}" data-status="DELIVERED">Mark Delivered</button>
+                </td>
+            </tr>
+        `);
+        });
+
+        $("#deliveryRequestsCount").text(deliveries.length);
+
+        // Bind action buttons
+        $(".update-delivery").on("click", function() {
+            const id = $(this).data("id");
+            const status = $(this).data("status");
+            updateDeliveryStatus(id, status);
+        });
+    }
+
+    function updateDeliveryStatus(id, status) {
+        $.ajax({
+            url: API_BASE_URL + `/deliveries/${id}/status?status=${status}`,
+            type: "PUT",
+            headers: { "Authorization": "Bearer " + jwtToken },
+            success: function(response) {
+                Swal.fire("Updated!", "Delivery status updated.", "success");
+                loadDeliveries();
+            },
+            error: function(xhr) {
+                Swal.fire("Error", "Could not update status.", "error");
+            }
+        });
+    }
+
+    // Open modal with selected lost item
+    function openDeliveryModal(lostItemId) {
+        $("#deliveryLostItemId").val(lostItemId);
+        $("#deliveryMethod").val("");
+        $("#deliveryAddress").val("");
+        $("#deliveryAddressGroup").addClass("d-none");
+        $("#deliveryModal").modal("show");
+    }
+
+    // Show address input only if "DELIVERY" selected
+    $("#deliveryMethod").on("change", function () {
+        if ($(this).val() === "DELIVERY") {
+            $("#deliveryAddressGroup").removeClass("d-none");
+        } else {
+            $("#deliveryAddressGroup").addClass("d-none");
+        }
+    });
+
+    // Submit delivery request
+    $("#deliveryForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const lostItemId = $("#deliveryLostItemId").val();
+        const method = $("#deliveryMethod").val();
+        const address = method === "DELIVERY" ? $("#deliveryAddress").val() : null;
+
+        $.ajax({
+            url: API_BASE_URL + "/deliveries",
+            type: "POST",
+            headers: {"Authorization": "Bearer " + jwtToken},
+            contentType: "application/json",
+            data: JSON.stringify({lostItemId, method, address}),
+            success: function (response) {
+                if (response.status === 200) {
+                    Swal.fire("Success", "Delivery request submitted!", "success");
+                    $("#deliveryModal").modal("hide");
+                }
+            },
+            error: function (xhr) {
+                Swal.fire("Error", "Failed to request delivery.", "error");
+            }
+        });
+    });
 
     // Load notifications for the current user
     function loadNotifications() {
@@ -2095,7 +1893,7 @@
                 headers: {
                     'Authorization': 'Bearer ' + jwtToken
                 },
-                success: function(response) {
+                success: function (response) {
                     $('#notificationsLoading').addClass('d-none');
 
                     if (response.status === 200) {
@@ -2112,7 +1910,7 @@
                         $('#notificationsList').html('<p class="text-center">Failed to load notifications.</p>');
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     $('#notificationsLoading').addClass('d-none');
                     console.error('Failed to load notifications:', xhr);
                     $('#notificationsList').html('<p class="text-center">Error loading notifications. Please try again later.</p>');
@@ -2154,7 +1952,7 @@
         });
 
         // Add event listeners for mark as read buttons
-        $('.mark-as-read-btn').on('click', function() {
+        $('.mark-as-read-btn').on('click', function () {
             const notificationId = $(this).data('id');
             markNotificationAsRead(notificationId);
         });
@@ -2168,7 +1966,7 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     // Update the UI
                     $(`.card[data-id="${notificationId}"]`).removeClass('border-primary');
@@ -2185,7 +1983,7 @@
                     showSuccess('Notification marked as read');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error('Failed to mark notification as read:', xhr);
                 showError('Failed to mark notification as read. Please try again.');
             }
@@ -2228,6 +2026,16 @@
             });
     }
 
+    // <td>
+    //     <button className="btn btn-sm btn-outline-primary view-item action-btn" data-id="${item.lostId}">View</button>
+    //     ${currentUser.role === 'GUEST' ? `
+    //                 <button class="btn btn-sm btn-outline-secondary edit-item action-btn" data-id="${item.lostId}">Edit</button>
+    //                 ` : ''}
+    //     ${(currentUser.role === 'ADMIN' || currentUser.role === 'STAFF') ? `
+    //                 <button class="btn btn-sm btn-outline-danger archive-item action-btn" data-id="${item.lostId}">Archive</button>
+    //                 ` : ''}
+    // </td>
+
     // Populate lost items table
     function populateLostItemsTable(items) {
         const tbody = $('#lostItemsTable tbody');
@@ -2240,41 +2048,53 @@
 
         items.forEach(item => {
             const statusClass = getStatusClass(item.status);
+
             const row = `
-            <tr data-status="${item.status ? item.status.toLowerCase() : ''}">
-                <td>${item.title || 'Unknown Item'}</td>
-                <td>${item.guestName || (item.guest && item.guest.name) || 'Unknown Guest'}</td>
-                <td>${item.location || 'N/A'}</td>   <!-- Show location -->
-                <td>${formatDate(item.createdAt) || 'N/A'}</td> <!-- Lost date -->
-                <td><span class="status-badge ${statusClass}">${item.status || 'UNKNOWN'}</span></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary view-item action-btn" data-id="${item.lostId}">View</button>
-                    ${currentUser.role === 'GUEST' ? `
+        <tr data-status="${item.status ? item.status.toLowerCase() : ''}">
+            <td>${item.title || 'Unknown Item'}</td>
+            <td>${item.guestName || (item.guest && item.guest.name) || 'Unknown Guest'}</td>
+            <td>${item.location || 'N/A'}</td>   <!-- Show location -->
+            <td>${formatDate(item.createdAt) || 'N/A'}</td> <!-- Lost date -->
+            <td><span class="status-badge ${statusClass}">${item.status || 'UNKNOWN'}</span></td>
+
+            <td>
+                <button class="btn btn-sm btn-outline-primary view-item action-btn" data-id="${item.lostId}">View</button>
+                ${currentUser.role === 'GUEST' ? `
                     <button class="btn btn-sm btn-outline-secondary edit-item action-btn" data-id="${item.lostId}">Edit</button>
+                    ${(item.status === 'CLAIMED' || item.status === 'MATCHED') ? `
+                        <button class="btn btn-sm btn-primary request-delivery action-btn" data-id="${item.lostId}">
+                            Request Delivery
+                        </button>
                     ` : ''}
-                    ${(currentUser.role === 'ADMIN' || currentUser.role === 'STAFF') ? `
+                ` : ''}
+                ${(currentUser.role === 'ADMIN' || currentUser.role === 'STAFF') ? `
                     <button class="btn btn-sm btn-outline-danger archive-item action-btn" data-id="${item.lostId}">Archive</button>
-                    ` : ''}
-                </td>
-            </tr>
-        `;
+                ` : ''}
+            </td>
+        </tr>
+    `;
             tbody.append(row);
         });
 
-    // Add event listeners
-        $('.view-item').on('click', function() {
+        // Add event listeners
+        $('.view-item').on('click', function () {
             const itemId = $(this).data('id');
             viewItem(itemId, 'lost');
         });
 
-        $('.edit-item').on('click', function() {
+        $('.edit-item').on('click', function () {
             const itemId = $(this).data('id');
             editItem(itemId, 'lost');
         });
 
-        $('.archive-item').on('click', function() {
+        $('.archive-item').on('click', function () {
             const itemId = $(this).data('id');
             archiveItem(itemId, 'lost');
+        });
+
+        $('.request-delivery').on('click', function() {
+            const itemId = $(this).data('id');
+            openDeliveryModal(itemId);
         });
     }
 
@@ -2312,22 +2132,22 @@
         });
 
         // Add event listeners
-        $('.view-item').on('click', function() {
+        $('.view-item').on('click', function () {
             const itemId = $(this).data('id');
             viewItem(itemId, 'found');
         });
 
-        $('.match-item').on('click', function() {
+        $('.match-item').on('click', function () {
             const itemId = $(this).data('id');
             matchItem(itemId);
         });
 
-        $('.archive-item').on('click', function() {
+        $('.archive-item').on('click', function () {
             const itemId = $(this).data('id');
             archiveItem(itemId, 'found');
         });
 
-        $('.claim-item').on('click', function() {
+        $('.claim-item').on('click', function () {
             const itemId = $(this).data('id');
             const itemName = $(this).data('name');
             claimItem(itemId, itemName);
@@ -2387,6 +2207,46 @@
         });
     }
 
+    // Claim item
+    function claimItem(itemId, itemName) {
+        $('#claimItemId').val(itemId);
+        $('#claimItemName').text(itemName);
+        $('#claimMessage').val('');
+        $('#proofPreview').html('');
+        $('#claimItemModal').modal('show');
+    }
+
+    // Reply to claim (approve/reject)
+    function replyToClaim(claimId, approve) {
+        const message = prompt(`Please enter a message for the ${approve ? 'approval' : 'rejection'}:`);
+        if (message === null) return; // User cancelled
+
+        const replyData = {
+            message: message,
+            approve: approve
+        };
+
+        $.ajax({
+            url: API_BASE_URL + `/claims/${claimId}/reply`,
+            type: 'PUT',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify(replyData),
+            success: function (response) {
+                if (response.status === 200) {
+                    showSuccess(`Claim ${approve ? 'approved' : 'rejected'} successfully!`);
+                    loadDashboardData(); // Refresh data
+                }
+            },
+            error: function (xhr) {
+                console.error('Failed to reply to claim:', xhr);
+                showError('Failed to process claim request');
+            }
+        });
+    }
+
     // Populate claim requests table
     function populateClaimRequestsTable(claims) {
         const tbody = $('#claimRequestsTable tbody');
@@ -2403,35 +2263,37 @@
         claims.forEach(claim => {
             const statusClass = getStatusClass(claim.status);
             const row = `
-                <tr>
-                    <td>${claim.foundItemTitle || 'Unknown Item'}</td>
-                    <td>${claim.guestName || 'Unknown Guest'}</td>
-                    <td>${formatDate(claim.claimDate) || 'N/A'}</td>
-                    <td><span class="status-badge ${statusClass}">${claim.status || 'PENDING'}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary view-claim action-btn" data-id="${claim.claimId}">View</button>
-                        <button class="btn btn-sm btn-outline-success approve-claim action-btn" data-id="${claim.claimId}">Approve</button>
-                        <button class="btn btn-sm btn-outline-danger reject-claim action-btn" data-id="${claim.claimId}">Reject</button>
-                    </td>
-                </tr>
-            `;
+            <tr>
+                <td>${claim.foundItemId || 'Unknown Item'}</td>
+                <td>${claim.guestName || 'Unknown Guest'}</td>
+                <td>${formatDate(claim.createdAt) || 'N/A'}</td>
+                <td><span class="status-badge ${statusClass}">${claim.status || 'PENDING'}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary view-claim action-btn" data-id="${claim.id}">View</button>
+                    ${claim.status === 'PENDING' ? `
+                        <button class="btn btn-sm btn-outline-success approve-claim action-btn" data-id="${claim.id}">Approve</button>
+                        <button class="btn btn-sm btn-outline-danger reject-claim action-btn" data-id="${claim.id}">Reject</button>
+                    ` : ''}
+                </td>
+            </tr>
+        `;
             tbody.append(row);
         });
 
-        // Add event listeners
-        $('.view-claim').on('click', function() {
+        // Event listeners
+        $('.view-claim').on('click', function () {
             const claimId = $(this).data('id');
             viewClaim(claimId);
         });
 
-        $('.approve-claim').on('click', function() {
+        $('.approve-claim').on('click', function () {
             const claimId = $(this).data('id');
-            replyToClaim(claimId, true);
+            approveClaim(claimId);
         });
 
-        $('.reject-claim').on('click', function() {
+        $('.reject-claim').on('click', function () {
             const claimId = $(this).data('id');
-            replyToClaim(claimId, false);
+            rejectClaim(claimId);
         });
     }
 
@@ -2443,12 +2305,12 @@
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showItemDetails(response.data, type);
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error(`Failed to load ${type} item:`, xhr);
                 showError(`Failed to load ${type} item details`);
             }
@@ -2482,40 +2344,134 @@
         $('#itemDetailsModal').modal('show');
     }
 
-    // Show claim details in a modal (admin view)
+    function viewClaim(claimId) {
+        $.ajax({
+            url: API_BASE_URL + `/claims/${claimId}`,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (response) {
+                if (response.status === 200) {
+                    showClaimDetails(response.data);
+                }
+            },
+            error: function (xhr) {
+                console.error('Failed to load claim details:', xhr);
+                showError('Failed to load claim details: ' + (xhr.responseJSON?.message || 'Server error'));
+            }
+        });
+    }
+
+    // display claim information
     function showClaimDetails(claim) {
         const modalBody = $('#claimDetailsModal .modal-body');
         modalBody.empty();
 
-        const proofHtml = claim.proofImageUrl
-            ? `<img src="${claim.proofImageUrl}" class="img-fluid rounded mb-3" alt="Proof Image">`
+        const proofHtml = claim.proofImagePath
+            ? `<img src="${claim.proofImagePath}" class="img-fluid rounded mb-3" alt="Proof Image" style="max-height: 300px;">`
             : `<div class="alert alert-secondary">No proof image provided</div>`;
 
         const detailsHtml = `
-        <h5>Claim for: ${claim.foundItemTitle || 'Unknown Item'}</h5>
-        <p><strong>Guest:</strong> ${claim.guestName || 'N/A'}</p>
-        <p><strong>Message:</strong> ${claim.message || 'No message provided.'}</p>
-        <p><strong>Status:</strong> ${claim.status || 'PENDING'}</p>
-        <p><strong>Date:</strong> ${formatDate(claim.claimDate)}</p>
-        ${proofHtml}
-        <div class="d-flex justify-content-end mt-3">
-            <button class="btn btn-success me-2" id="approveClaimBtn" data-id="${claim.claimId}">Approve</button>
-            <button class="btn btn-danger" id="rejectClaimBtn" data-id="${claim.claimId}">Reject</button>
+    <div class="row">
+        <div class="col-md-6">
+            <h5>Claim Details</h5>
+            <p><strong>Claim ID:</strong> ${claim.id}</p>
+            <p><strong>Status:</strong> <span class="badge bg-${claim.status === 'PENDING' ? 'warning' : claim.status === 'APPROVED' ? 'success' : 'danger'}">${claim.status}</span></p>
+            <p><strong>Date Submitted:</strong> ${formatDate(claim.createdAt)}</p>
         </div>
-    `;
+        <div class="col-md-6">
+            <h5>Item Information</h5>
+            <p><strong>Item:</strong> ${claim.foundItemTitle || 'Unknown Item'}</p>
+            ${claim.foundItemImage ? `<img src="${claim.foundItemImage}" class="img-fluid rounded mb-2" alt="Item Image" style="max-height: 150px;">` : ''}
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <h5>Guest Information</h5>
+            <p><strong>Name:</strong> ${claim.guestName}</p>
+            <p><strong>Email:</strong> ${claim.guestEmail}</p>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <h5>Claim Message</h5>
+            <div class="border p-3 rounded">${claim.message || 'No message provided.'}</div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <h5>Proof of Ownership</h5>
+            ${proofHtml}
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        ${claim.status === 'PENDING' ? `
+            <button class="btn btn-success me-2" id="approveClaimBtn" data-id="${claim.id}">Approve</button>
+            <button class="btn btn-danger" id="rejectClaimBtn" data-id="${claim.id}">Reject</button>
+        ` : ''}
+    </div>
+`;
 
         modalBody.html(detailsHtml);
         $('#claimDetailsModal').modal('show');
 
-        // Attach event listeners
-        $('#approveClaimBtn').on('click', function() {
-            replyToClaim(claim.claimId, true);
+        // Approve button
+        $('#approveClaimBtn').on('click', function () {
             $('#claimDetailsModal').modal('hide');
+            approveClaim(claim.id);
         });
 
-        $('#rejectClaimBtn').on('click', function() {
-            replyToClaim(claim.claimId, false);
+        // Reject button
+        $('#rejectClaimBtn').on('click', function () {
             $('#claimDetailsModal').modal('hide');
+            const reason = prompt("Enter reason for rejection:");
+            if (reason) rejectClaim(claim.id, reason);
+        });
+    }
+
+    // Approve claim
+    function approveClaim(claimId) {
+        $.ajax({
+            url: API_BASE_URL + `/claims/${claimId}/approve`,
+            type: 'PUT',
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
+                if (response.status === 200) {
+                    showSuccess("Claim approved successfully! Guest has been notified.");
+                    loadAdminData(); // refresh data
+                }
+            },
+            error: function (xhr) {
+                console.error("Failed to approve claim:", xhr);
+                showError("Failed to approve claim");
+            }
+        });
+    }
+
+    // Reject claim
+    function rejectClaim(claimId) {
+        const reason = prompt("Enter reason for rejection:");
+        if (!reason) return;
+
+        $.ajax({
+            url: API_BASE_URL + `/claims/${claimId}/reject?reason=${encodeURIComponent(reason)}`,
+            type: 'PUT',
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
+                if (response.status === 200) {
+                    showSuccess("Claim rejected successfully! Guest has been notified.");
+                    loadAdminData();
+                }
+            },
+            error: function (xhr) {
+                console.error("Failed to reject claim:", xhr);
+                showError("Failed to reject claim");
+            }
         });
     }
 
@@ -2524,8 +2480,8 @@
         $.ajax({
             url: API_BASE_URL + `/${type}-items/${itemId}`,
             type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
-            success: function(response) {
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
                 if (response.status === 200) {
                     const item = response.data;
 
@@ -2541,14 +2497,14 @@
                     $('#editItemModal').modal('show');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError(`Failed to load ${type} item details`);
             }
         });
     }
 
     // Save edited item
-    $('#editItemForm').on('submit', function(e) {
+    $('#editItemForm').on('submit', function (e) {
         e.preventDefault();
 
         const itemId = $('#editItemId').val();
@@ -2565,16 +2521,16 @@
             url: API_BASE_URL + `/${type}-items/${itemId}`,
             type: 'PUT',
             contentType: 'application/json',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             data: JSON.stringify(updatedData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item updated successfully!`);
                     $('#editItemModal').modal('hide');
                     loadDashboardData();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError(`Failed to update ${type} item`);
             }
         });
@@ -2582,20 +2538,20 @@
 
     // Archive item
     function archiveItem(itemId, type) {
-        showConfirm(`Are you sure you want to archive this ${type} item?`, function() {
+        showConfirm(`Are you sure you want to archive this ${type} item?`, function () {
             $.ajax({
                 url: API_BASE_URL + `/${type}-items/${itemId}/archive`,
                 type: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + jwtToken
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.status === 200) {
                         showSuccess(`${type.charAt(0).toUpperCase() + type.slice(1)} item archived successfully!`);
                         loadDashboardData(); // Refresh data
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error(`Failed to archive ${type} item:`, xhr);
                     showError(`Failed to archive ${type} item`);
                 }
@@ -2611,8 +2567,8 @@
         $.ajax({
             url: API_BASE_URL + '/lost-items/archived',
             type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
-            success: function(response) {
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
                 response.data.forEach(item => {
                     tbody.append(`
                     <tr>
@@ -2630,8 +2586,8 @@
         $.ajax({
             url: API_BASE_URL + '/found-items/archived',
             type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
-            success: function(response) {
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
                 response.data.forEach(item => {
                     tbody.append(`
                     <tr>
@@ -2652,8 +2608,8 @@
         $.ajax({
             url: API_BASE_URL + '/lost-items',
             type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
-            success: function(response) {
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
                 if (response.status === 200) {
                     const lostItems = response.data;
 
@@ -2671,99 +2627,39 @@
                     $('#matchItemModal').modal('show');
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to load lost items for matching');
             }
         });
     }
 
     // Submit match
-    $('#matchItemForm').on('submit', function(e) {
+    $('#matchItemForm').on('submit', function (e) {
         e.preventDefault();
 
         const foundItemId = $('#matchFoundItemId').val();
         const lostItemId = $('#matchLostItemSelect').val();
 
-        const matchData = { foundItemId, lostItemId };
+        const matchData = {foundItemId, lostItemId};
 
         $.ajax({
             url: API_BASE_URL + '/matches',
             type: 'POST',
             contentType: 'application/json',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             data: JSON.stringify(matchData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showSuccess('Item matched successfully!');
                     $('#matchItemModal').modal('hide');
                     loadDashboardData();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to match item');
             }
         });
     });
-
-    // Claim item
-    function claimItem(itemId, itemName) {
-        $('#claimItemId').val(itemId);
-        $('#claimItemName').text(itemName);
-        $('#claimMessage').val('');
-        $('#proofPreview').html('');
-        $('#claimItemModal').modal('show');
-    }
-
-    // View claim details
-    function viewClaim(claimId) {
-        $.ajax({
-            url: API_BASE_URL + `/claims/${claimId}`,
-            type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
-            success: function(response) {
-                if (response.status === 200) {
-                    showClaimDetails(response.data);
-                }
-            },
-            error: function(xhr) {
-                console.error('Failed to load claim details:', xhr);
-                showError('Failed to load claim details');
-            }
-        });
-    }
-
-    // Reply to claim (approve/reject)
-    function replyToClaim(claimId, approve) {
-        const message = prompt(`Please enter a message for the ${approve ? 'approval' : 'rejection'}:`);
-        if (message === null) return; // User cancelled
-
-        const replyData = {
-            message: message,
-            approve: approve
-        };
-
-        $.ajax({
-            url: API_BASE_URL + `/claims/${claimId}/reply`,
-            type: 'PUT',
-            contentType: 'application/json',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
-            data: JSON.stringify(replyData),
-            success: function(response) {
-                if (response.status === 200) {
-                    showSuccess(`Claim ${approve ? 'approved' : 'rejected'} successfully!`);
-                    loadDashboardData(); // Refresh data
-                }
-            },
-            error: function(xhr) {
-                console.error('Failed to reply to claim:', xhr);
-                showError('Failed to process claim request');
-            }
-        });
-    }
 
     // Filter items by status
     function filterItems(filter) {
@@ -2832,11 +2728,9 @@
 
     // Logout function
     function logoutUser() {
-        showConfirm('Are you sure you want to logout?', function() {
-            // localStorage.removeItem('jwtToken');
-            // localStorage.removeItem('currentUser');
-            deleteCookie("jwtToken");
-            deleteCookie("currentUser");
+        showConfirm('Are you sure you want to logout?', function () {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('currentUser');
             jwtToken = null;
             currentUser = null;
             notifications = [];
@@ -2868,28 +2762,28 @@
         const address = $('#hotelAddress').val();
         const phone = $('#hotelPhone').val();
 
-        const hotelData = { name, address, phone };
+        const hotelData = {name, address, phone};
 
         $.ajax({
             url: API_BASE_URL + '/hotels',
             type: 'POST',
             contentType: 'application/json',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             data: JSON.stringify(hotelData),
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 200) {
                     showSuccess('Hotel added successfully!');
                     $('#addHotelModal').modal('hide');
                     loadAdminData(); // reload table
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to add hotel: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
     }
 
-    $('#addStaffForm').on('submit', function(e) {
+    $('#addStaffForm').on('submit', function (e) {
         e.preventDefault();
 
         const staffData = {
@@ -2905,14 +2799,14 @@
             url: API_BASE_URL + '/auth/register',
             type: 'POST',
             contentType: 'application/json',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             data: JSON.stringify(staffData),
-            success: function(response) {
+            success: function (response) {
                 showSuccess('Staff added successfully!');
                 $('#addStaffModal').modal('hide');
                 loadAdminData();
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to add staff: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -2922,8 +2816,8 @@
         $.ajax({
             url: API_BASE_URL + '/hotels',
             type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + jwtToken },
-            success: function(response) {
+            headers: {'Authorization': 'Bearer ' + jwtToken},
+            success: function (response) {
                 if (response.status === 200 && response.data) {
                     const hotels = response.data;
                     const $select = $('#staffHotelId');
@@ -2935,7 +2829,7 @@
                     });
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 showError('Failed to load hotels: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
@@ -2944,48 +2838,49 @@
     // Load Admin statistics
     function loadAdminStats() {
         const statsHtml = `
-        <div class="col-md-3">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="lostItemsCount">0</div>
-                <div class="stat-label">Lost Items</div>
-            </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="lostItemsCount">0</div>
+            <div class="stat-label">Lost Items</div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="foundItemsCount">0</div>
-                <div class="stat-label">Found Items</div>
-            </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="foundItemsCount">0</div>
+            <div class="stat-label">Found Items</div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="matchedItemsCount">0</div>
-                <div class="stat-label">Matched Items</div>
-            </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="matchedItemsCount">0</div>
+            <div class="stat-label">Matched Items</div>
         </div>
-        <div class="col-md-3">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="guestsCount">0</div>
-                <div class="stat-label">Registered Guests</div>
-            </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="guestsCount">0</div>
+            <div class="stat-label">Registered Guests</div>
         </div>
+    </div>
     `;
         $('#statsSection').html(statsHtml);
 
         $.ajax({
             url: API_BASE_URL + '/stats/admin',
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             success: function (res) {
-                const stats = res.data;
-                $('#lostItemsCount').text(stats.lostItems);
-                $('#foundItemsCount').text(stats.foundItems);
-                $('#matchedItemsCount').text(stats.matchedItems);
-                $('#guestsCount').text(stats.guests);
+                if (res && res.status === 200 && res.data) {
+                    $('#lostItemsCount').text(res.data.lostItems ?? 0);
+                    $('#foundItemsCount').text(res.data.foundItems ?? 0);
+                    $('#matchedItemsCount').text(res.data.matchedItems ?? 0);
+                    $('#guestsCount').text(res.data.guests ?? 0);
+                } else {
+                    console.error("Admin stats response invalid:", res);
+                }
             },
-            error: function () {
-                console.error("Failed to load admin stats");
+            error: function (xhr) {
+                console.error("Failed to load admin stats:", xhr.responseJSON || xhr.statusText);
             }
         });
     }
@@ -2993,41 +2888,42 @@
     // Load Staff statistics
     function loadStaffStats() {
         const statsHtml = `
-        <div class="col-md-4">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="staffLostItemsCount">0</div>
-                <div class="stat-label">Lost Items</div>
-            </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="staffLostItemsCount">0</div>
+            <div class="stat-label">Lost Items</div>
         </div>
-        <div class="col-md-4">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="staffFoundItemsCount">0</div>
-                <div class="stat-label">Found Items</div>
-            </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="staffFoundItemsCount">0</div>
+            <div class="stat-label">Found Items</div>
         </div>
-        <div class="col-md-4">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="staffMatchedItemsCount">0</div>
-                <div class="stat-label">Matched Items</div>
-            </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="staffMatchedItemsCount">0</div>
+            <div class="stat-label">Matched Items</div>
         </div>
+    </div>
     `;
         $('#statsSection').html(statsHtml);
 
         $.ajax({
             url: API_BASE_URL + '/stats/staff',
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             success: function (res) {
-                const stats = res.data;
-                $('#staffLostItemsCount').text(stats.lostItems);
-                $('#staffFoundItemsCount').text(stats.foundItems);
-                $('#staffMatchedItemsCount').text(stats.matchedItems);
+                if (res && res.status === 200 && res.data) {
+                    $('#staffLostItemsCount').text(res.data.lostItems ?? 0);
+                    $('#staffFoundItemsCount').text(res.data.foundItems ?? 0);
+                    $('#staffMatchedItemsCount').text(res.data.matchedItems ?? 0);
+                } else {
+                    console.error("Staff stats response invalid:", res);
+                }
             },
-            error: function () {
-                console.error("Failed to load staff stats");
+            error: function (xhr) {
+                console.error("Failed to load staff stats:", xhr.responseJSON || xhr.statusText);
             }
         });
     }
@@ -3035,34 +2931,35 @@
     // Load Guest statistics
     function loadGuestStats() {
         const statsHtml = `
-        <div class="col-md-6">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="guestLostItemsCount">0</div>
-                <div class="stat-label">Your Lost Items</div>
-            </div>
+    <div class="col-md-6">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="guestLostItemsCount">0</div>
+            <div class="stat-label">Your Lost Items</div>
         </div>
-        <div class="col-md-6">
-            <div class="stat-card text-center p-3">
-                <div class="stat-number" id="guestMatchedItemsCount">0</div>
-                <div class="stat-label">Matched Items</div>
-            </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card text-center p-3">
+            <div class="stat-number" id="guestMatchedItemsCount">0</div>
+            <div class="stat-label">Matched Items</div>
         </div>
+    </div>
     `;
         $('#statsSection').html(statsHtml);
 
         $.ajax({
             url: API_BASE_URL + '/stats/guest',
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            },
+            headers: {'Authorization': 'Bearer ' + jwtToken},
             success: function (res) {
-                const stats = res.data;
-                $('#guestLostItemsCount').text(stats.lostItems);
-                $('#guestMatchedItemsCount').text(stats.matchedItems);
+                if (res && res.status === 200 && res.data) {
+                    $('#guestLostItemsCount').text(res.data.lostItems ?? 0);
+                    $('#guestMatchedItemsCount').text(res.data.matchedItems ?? 0);
+                } else {
+                    console.error("Guest stats response invalid:", res);
+                }
             },
-            error: function () {
-                console.error("Failed to load guest stats");
+            error: function (xhr) {
+                console.error("Failed to load guest stats:", xhr.responseJSON || xhr.statusText);
             }
         });
     }

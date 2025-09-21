@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ClaimService {
-    ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage);
+//    ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, MultipartFile proofImage);
+    ClaimResponseDTO createClaim(Long foundItemId, String guestEmail, String message, String proofImageUrl);
     List<ClaimResponseDTO> getAllClaims();
     void replyToClaim(Long claimId, String replyMessage, boolean approve);
     ClaimResponseDTO approveClaim(Long claimId);
     ClaimResponseDTO rejectClaim(Long claimId, String reason);
+    ClaimResponseDTO getClaimById(Long id);
 }

@@ -1,6 +1,9 @@
 package com.gdse.aad.backend.service.impl;
 
-import com.gdse.aad.backend.repository.*;
+import com.gdse.aad.backend.entity.LostItem;
+import com.gdse.aad.backend.repository.FoundItemRepository;
+import com.gdse.aad.backend.repository.GuestRepository;
+import com.gdse.aad.backend.repository.LostItemRepository;
 import com.gdse.aad.backend.service.StatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,7 @@ public class StatsServiceImpl implements StatsService {
         Map<String, Long> stats = new HashMap<>();
         stats.put("lostItems", lostItemRepository.count()); // total lost items
         stats.put("foundItems", foundItemRepository.count()); // total found items
-        stats.put("matchedItems", lostItemRepository.countByStatus("MATCHED")); // matched lost items
+        stats.put("matchedItems", lostItemRepository.countByStatus(LostItem.Status.MATCHED)); // matched lost items
         stats.put("guests", guestRepository.count()); // total registered guests
         return stats;
     }
@@ -33,7 +36,7 @@ public class StatsServiceImpl implements StatsService {
         Map<String, Long> stats = new HashMap<>();
         stats.put("lostItems", lostItemRepository.count()); // staff see all lost items
         stats.put("foundItems", foundItemRepository.count()); // staff see all found items
-        stats.put("matchedItems", lostItemRepository.countByStatus("MATCHED")); // all matched
+        stats.put("matchedItems", lostItemRepository.countByStatus(LostItem.Status.MATCHED)); // all matched
         return stats;
     }
 
@@ -42,7 +45,7 @@ public class StatsServiceImpl implements StatsService {
     public Map<String, Long> getGuestStats(String email) {
         Map<String, Long> stats = new HashMap<>();
         stats.put("lostItems", lostItemRepository.countByGuestEmail(email)); // only guest's lost items
-        stats.put("matchedItems", lostItemRepository.countByGuestEmailAndStatus(email, "MATCHED")); // only guest's matched
+        stats.put("matchedItems", lostItemRepository.countByGuestEmailAndStatus(email, LostItem.Status.MATCHED)); // only guest's matched
         return stats;
     }
 }

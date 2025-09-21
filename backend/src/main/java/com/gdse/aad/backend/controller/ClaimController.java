@@ -1,6 +1,7 @@
 package com.gdse.aad.backend.controller;
 
 import com.gdse.aad.backend.dto.ApiResponseDTO;
+import com.gdse.aad.backend.dto.ClaimRequestDTO;
 import com.gdse.aad.backend.dto.ClaimResponseDTO;
 import com.gdse.aad.backend.service.ClaimService;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,11 @@ public class ClaimController {
 
     private final ClaimService claimService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponseDTO> createClaim(
-            @RequestParam Long foundItemId, @RequestParam(required = false) String message, @RequestPart(required = false) MultipartFile proofImage,
-            Authentication authentication) throws IOException {
-
+    @PostMapping
+    @PreAuthorize("hasRole('GUEST')")
+    public ResponseEntity<ApiResponseDTO> createClaim(@RequestBody ClaimRequestDTO request, Authentication authentication) {
         String email = authentication.getName();
-        ClaimResponseDTO dto = claimService.createClaim(foundItemId, email, message, proofImage);
+        ClaimResponseDTO dto = claimService.createClaim(request.getFoundItemId(), email, request.getMessage(), request.getProofImagePath());
         return ResponseEntity.ok(new ApiResponseDTO(200, "Created", dto));
     }
 
@@ -61,6 +60,12 @@ public class ClaimController {
         );
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<ApiResponseDTO> getClaimById(@PathVariable Long id) {
+        ClaimResponseDTO claim = claimService.getClaimById(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", claim));
+    }
 
     // small DTO for reply
     public static class ReplyDTO {

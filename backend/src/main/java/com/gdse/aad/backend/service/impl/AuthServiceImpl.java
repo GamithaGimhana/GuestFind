@@ -91,6 +91,7 @@ public class AuthServiceImpl implements AuthService {
                 .name(guest.getName())
                 .email(guest.getEmail())
                 .phone(guest.getPhone())
+                .role("GUEST")
                 .build();
 
         return new AuthResponseDTO(token, guestDTO);
