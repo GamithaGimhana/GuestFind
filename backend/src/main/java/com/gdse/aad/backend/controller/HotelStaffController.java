@@ -31,10 +31,7 @@ public class HotelStaffController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponseDTO> updateProfile(
-            @RequestHeader("Authorization") String token,
-            @RequestBody HotelStaffDTO dto
-    ) {
+    public ResponseEntity<ApiResponseDTO> updateProfile(@RequestHeader("Authorization") String token, @RequestBody HotelStaffDTO dto) {
         String email = jwtUtil.extractUsername(token.substring(7));
         HotelStaffDTO updated = hotelStaffService.updateProfile(email, dto);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Profile Updated", updated));
@@ -42,10 +39,7 @@ public class HotelStaffController {
 
     @PutMapping("/me/password")
     @PreAuthorize("hasRole('STAFF')")
-    public ResponseEntity<ApiResponseDTO> updateMyPassword(
-            @RequestBody PasswordUpdateDTO dto,
-            Authentication authentication
-    ) {
+    public ResponseEntity<ApiResponseDTO> updateMyPassword(@RequestBody PasswordUpdateDTO dto, Authentication authentication) {
         String email = authentication.getName();
         hotelStaffService.updatePassword(email, dto);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Password updated successfully", null));
@@ -69,11 +63,30 @@ public class HotelStaffController {
 
     @PutMapping("/admin/{email}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponseDTO> updateStaffByEmail(
-            @PathVariable String email,
-            @RequestBody HotelStaffDTO dto
-    ) {
+    public ResponseEntity<ApiResponseDTO> updateStaffByEmail(@PathVariable String email, @RequestBody HotelStaffDTO dto) {
         HotelStaffDTO updated = hotelStaffService.adminUpdateProfile(email, dto);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Staff Updated", updated));
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> getStaffById(@PathVariable Long id) {
+        HotelStaffDTO staff = hotelStaffService.getStaffById(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", staff));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> deleteStaff(@PathVariable Long id) {
+        hotelStaffService.deleteStaff(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "Staff Deleted", null));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> updateStaffById(@PathVariable Long id, @RequestBody HotelStaffDTO dto) {
+        HotelStaffDTO updated = hotelStaffService.updateStaffById(id, dto);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "Staff Updated", updated));
+    }
+
 }

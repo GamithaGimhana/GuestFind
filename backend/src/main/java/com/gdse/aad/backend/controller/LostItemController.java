@@ -48,12 +48,13 @@ public class LostItemController {
 
     // Guest & Staff can view single lost item
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('GUEST','STAFF')")
+    @PreAuthorize("hasAnyRole('GUEST','STAFF','ADMIN')")
     public ResponseEntity<ApiResponseDTO> getLostItemById(@PathVariable Long id) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "OK", lostItemService.getLostItemById(id))
         );
     }
+
 
     // Guest can update only their own lost items
     @PutMapping("/{id}")
@@ -94,5 +95,13 @@ public class LostItemController {
     public ResponseEntity<ApiResponseDTO> getArchivedLostItems() {
         return ResponseEntity.ok(new ApiResponseDTO(200, "OK", lostItemService.getArchivedLostItems()));
     }
+
+    @PutMapping("/{id}/unarchive")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> unarchiveLostItem(@PathVariable Long id) {
+        lostItemService.unarchiveLostItem(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "Unarchived", null));
+    }
+
 }
 

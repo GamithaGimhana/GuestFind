@@ -110,5 +110,48 @@ public class HotelStaffServiceImpl implements HotelStaffService {
         HotelStaff updated = hotelStaffRepository.save(staff);
         return modelMapper.map(updated, HotelStaffDTO.class);
     }
+
+    @Override
+    public HotelStaffDTO getStaffById(Long id) {
+        HotelStaff staff = hotelStaffRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Staff not found with id: " + id));
+        return modelMapper.map(staff, HotelStaffDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public void deleteStaff(Long id) {
+        HotelStaff staff = hotelStaffRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Staff not found with id: " + id));
+        hotelStaffRepository.delete(staff);
+    }
+
+    @Override
+    @Transactional
+    public HotelStaffDTO updateStaffById(Long id, HotelStaffDTO dto) {
+        HotelStaff staff = hotelStaffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff not found with id: " + id));
+
+        staff.setName(dto.getName());
+        staff.setEmail(dto.getEmail());
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            staff.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        if (dto.getRole() != null) {
+            staff.setRole(HotelStaff.Role.valueOf(dto.getRole().toUpperCase()));
+        }
+
+        if (dto.getHotelId() != null) {
+            Hotel hotel = hotelRepository.findById(dto.getHotelId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id: " + dto.getHotelId()));
+            staff.setHotel(hotel);
+        }
+
+        HotelStaff updated = hotelStaffRepository.save(staff);
+        return modelMapper.map(updated, HotelStaffDTO.class);
+    }
+
 }
 

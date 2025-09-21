@@ -2,6 +2,7 @@ package com.gdse.aad.backend.service;
 
 import com.gdse.aad.backend.dto.LostItemRequestDTO;
 import com.gdse.aad.backend.dto.LostItemResponseDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,4 +17,5 @@ public interface LostItemService {
     List<LostItemResponseDTO> getLostItemsByGuest(String email);
     void archiveLostItem(Long id);
     List<LostItemResponseDTO> getArchivedLostItems();
+    void unarchiveLostItem(Long id);
 }

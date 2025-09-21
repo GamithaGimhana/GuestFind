@@ -182,4 +182,15 @@ public class FoundItemServiceImpl implements FoundItemService {
         return dto;
     }
 
+    @Transactional
+    @Override
+    public void unarchiveFoundItem(Long id) {
+        FoundItem item = foundItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Found item not found with id: " + id));
+
+        item.setArchived(false);
+        item.setStatus(FoundItem.Status.UNCLAIMED); // or last known status
+        foundItemRepository.save(item);
+    }
+
 }

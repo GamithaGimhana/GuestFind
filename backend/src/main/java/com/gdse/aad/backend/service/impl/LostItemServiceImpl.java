@@ -182,5 +182,17 @@ public class LostItemServiceImpl implements LostItemService {
                         .build())
                 .toList();
     }
+
+    @Transactional
+    @Override
+    public void unarchiveLostItem(Long id) {
+        LostItem item = lostItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lost item not found with id: " + id));
+
+        item.setArchived(false);
+        item.setStatus(LostItem.Status.PENDING); // or last known status
+        lostItemRepository.save(item);
+    }
+
 }
 

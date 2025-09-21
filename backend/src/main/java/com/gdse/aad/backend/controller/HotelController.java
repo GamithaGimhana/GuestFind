@@ -34,4 +34,29 @@ public class HotelController {
                 new ApiResponseDTO(200, "OK", hotels)
         );
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> getHotelById(@PathVariable Long id) {
+        HotelDTO hotel = hotelService.getHotelById(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", hotel));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> updateHotel(
+            @PathVariable Long id,
+            @RequestBody HotelDTO hotelDTO
+    ) {
+        HotelDTO updated = hotelService.updateHotel(id, hotelDTO);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "Hotel Updated", updated));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO> deleteHotel(@PathVariable Long id) {
+        hotelService.deleteHotel(id);
+        return ResponseEntity.ok(new ApiResponseDTO(200, "Hotel Deleted", null));
+    }
+
 }

@@ -7,6 +7,7 @@ import com.gdse.aad.backend.exception.ResourceNotFoundException;
 import com.gdse.aad.backend.repository.DeliveryRepository;
 import com.gdse.aad.backend.repository.LostItemRepository;
 import com.gdse.aad.backend.service.DeliveryService;
+import com.gdse.aad.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
     private final LostItemRepository lostItemRepository;
+    private final NotificationService notificationService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -51,21 +53,53 @@ public class DeliveryServiceImpl implements DeliveryService {
         return response;
     }
 
-    @Override
-    @Transactional
-    public DeliveryDTO updateStatus(Long id, String status) {
-        Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found"));
+//    @Override
+//    @Transactional
+//    public DeliveryDTO updateStatus(Long id, String status) {
+//        Delivery delivery = deliveryRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Delivery not found"));
+//
+//        delivery.setStatus(Delivery.Status.valueOf(status.toUpperCase()));
+//        Delivery updated = deliveryRepository.save(delivery);
+//
+//        DeliveryDTO dto = modelMapper.map(updated, DeliveryDTO.class);
+//        dto.setLostItemId(updated.getLostItem().getLostId());
+//        dto.setMethod(updated.getMethod().name());
+//        dto.setStatus(updated.getStatus().name());
+//        return dto;
+//    }
+@Override
+@Transactional
+public DeliveryDTO updateStatus(Long id, String status) {
+    Delivery delivery = deliveryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Delivery not found"));
 
-        delivery.setStatus(Delivery.Status.valueOf(status.toUpperCase()));
-        Delivery updated = deliveryRepository.save(delivery);
+    delivery.setStatus(Delivery.Status.valueOf(status.toUpperCase()));
+    Delivery updated = deliveryRepository.save(delivery);
 
-        DeliveryDTO dto = modelMapper.map(updated, DeliveryDTO.class);
-        dto.setLostItemId(updated.getLostItem().getLostId());
-        dto.setMethod(updated.getMethod().name());
-        dto.setStatus(updated.getStatus().name());
-        return dto;
+    // ✅ notify guest if shipped or delivered
+    LostItem lostItem = updated.getLostItem();
+    if (lostItem != null && lostItem.getGuest() != null) {
+        String message = null;
+
+        if (updated.getStatus() == Delivery.Status.SHIPPED) {
+            message = "Your lost item '" + lostItem.getTitle() + "' has been shipped.";
+        } else if (updated.getStatus() == Delivery.Status.DELIVERED) {
+            message = "Your lost item '" + lostItem.getTitle() + "' has been delivered!";
+        }
+
+        if (message != null) {
+            notificationService.sendNotification(lostItem.getGuest(), message);
+        }
     }
+
+    DeliveryDTO dto = modelMapper.map(updated, DeliveryDTO.class);
+    dto.setLostItemId(updated.getLostItem().getLostId());
+    dto.setMethod(updated.getMethod().name());
+    dto.setStatus(updated.getStatus().name());
+    return dto;
+}
+
 
     @Override
     public List<DeliveryDTO> getAllDeliveries() {

@@ -34,4 +34,32 @@ public class HotelServiceImpl implements HotelService {
                 ))
                 .toList();
     }
+
+    @Override
+    public HotelDTO getHotelById(Long id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + id));
+        return modelMapper.map(hotel, HotelDTO.class);
+    }
+
+    @Override
+    public HotelDTO updateHotel(Long id, HotelDTO dto) {
+        Hotel existing = hotelRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + id));
+
+        existing.setName(dto.getName());
+        existing.setAddress(dto.getAddress());
+        existing.setPhone(dto.getPhone());
+
+        Hotel updated = hotelRepository.save(existing);
+        return modelMapper.map(updated, HotelDTO.class);
+    }
+
+    @Override
+    public void deleteHotel(Long id) {
+        Hotel existing = hotelRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + id));
+        hotelRepository.delete(existing);
+    }
+
 }

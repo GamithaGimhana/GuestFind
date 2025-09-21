@@ -13,4 +13,7 @@ public interface HotelStaffService {
     HotelStaffDTO getProfileByEmailFull(String email);
     void updatePassword(String email, PasswordUpdateDTO dto);
     HotelStaffDTO adminUpdateProfile(String email, HotelStaffDTO dto);
+    HotelStaffDTO getStaffById(Long id);
+    void deleteStaff(Long id);
+    HotelStaffDTO updateStaffById(Long id, HotelStaffDTO dto);
 }
