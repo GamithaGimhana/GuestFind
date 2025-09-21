@@ -19,7 +19,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -45,6 +44,7 @@ public class LostItemServiceImpl implements LostItemService {
                 .description(requestDTO.getDescription())
                 .imagePath(requestDTO.getImagePath())
                 .status(LostItem.Status.PENDING)
+                .location(requestDTO.getLocationLost())
                 .archived(false)
                 .build();
 
@@ -164,6 +164,23 @@ public class LostItemServiceImpl implements LostItemService {
         item.setArchived(true);
         item.setStatus(LostItem.Status.ARCHIVED);
         lostItemRepository.save(item);
+    }
+
+    @Override
+    public List<LostItemResponseDTO> getArchivedLostItems() {
+        return lostItemRepository.findByArchivedTrue()
+                .stream()
+                .map(item -> LostItemResponseDTO.builder()
+                        .lostId(item.getLostId())
+                        .guestName(item.getGuest().getName())
+                        .title(item.getTitle())
+                        .description(item.getDescription())
+                        .imagePath(item.getImagePath())
+                        .status(item.getStatus().name())
+                        .createdAt(item.getCreatedAt())
+                        .location(item.getLocation())
+                        .build())
+                .toList();
     }
 }
 

@@ -73,5 +73,19 @@ public class FoundItemController {
         );
     }
 
+    @GetMapping("/archived")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    public ResponseEntity<ApiResponseDTO> getArchivedFoundItems() {
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", foundItemService.getArchivedFoundItems()));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'GUEST')") // Add authorization for consistency
+    public ResponseEntity<ApiResponseDTO> getFoundItem(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                new ApiResponseDTO(200, "OK", foundItemService.getFoundItemById(id))
+        );
+    }
+
 }
 

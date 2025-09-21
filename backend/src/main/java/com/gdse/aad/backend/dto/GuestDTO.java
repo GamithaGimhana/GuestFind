@@ -13,6 +13,7 @@ public class GuestDTO {
     private String name;
     private String email;
     private String phone;
-    private String password; 
+    private String password;
+    private String role;
 }
 

@@ -44,6 +44,7 @@ public class FoundItemServiceImpl implements FoundItemService {
                 .description(dto.getDescription())
                 .imagePath(dto.getImagePath())
                 .status(FoundItem.Status.UNCLAIMED)
+                .location(dto.getLocationFound())
                 .claimed(false)
                 .archived(false)
                 .build();
@@ -117,7 +118,7 @@ public class FoundItemServiceImpl implements FoundItemService {
         existing.setTitle(dto.getTitle());
         existing.setDescription(dto.getDescription());
         existing.setImagePath(dto.getImagePath());
-        // optionally: allow status/location updates too if you have them in DTO
+        existing.setLocation(dto.getLocationFound());
 
         FoundItem updated = foundItemRepository.save(existing);
 
@@ -152,6 +153,33 @@ public class FoundItemServiceImpl implements FoundItemService {
                 "Good news! A staff member matched your lost item with: " + found.getTitle());
 
         return "Match successful";
+    }
+
+    @Override
+    public List<FoundItemResponseDTO> getArchivedFoundItems() {
+        return foundItemRepository.findByArchivedTrue()
+                .stream()
+                .map(item -> FoundItemResponseDTO.builder()
+                        .foundId(item.getFoundId())
+                        .title(item.getTitle())
+                        .description(item.getDescription())
+                        .imagePath(item.getImagePath())
+                        .status(item.getStatus().name())
+                        .createdAt(item.getCreatedAt())
+                        .location(item.getLocation())
+                        .staffName(item.getStaff().getName())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public FoundItemResponseDTO getFoundItemById(Long id) {
+        FoundItem item = foundItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Found item not found"));
+        FoundItemResponseDTO dto = modelMapper.map(item, FoundItemResponseDTO.class);
+        dto.setStaffName(item.getStaff().getName());
+        dto.setCreatedAt(item.getCreatedAt());
+        return dto;
     }
 
 }

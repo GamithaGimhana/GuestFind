@@ -9,4 +9,5 @@ public interface FoundItemRepository extends JpaRepository<FoundItem, Long> {
     List<FoundItem> findByStatus(FoundItem.Status status);
     List<FoundItem> findByClaimedFalse();
     List<FoundItem> findByArchivedFalse();
+    List<FoundItem> findByArchivedTrue();
 }

@@ -38,6 +38,9 @@ public class FoundItem {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(length = 255)
+    private String location;
+
     @Column(nullable = false)
     private boolean claimed = false;
 

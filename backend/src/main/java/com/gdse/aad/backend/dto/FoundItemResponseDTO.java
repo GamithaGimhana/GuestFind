@@ -19,6 +19,7 @@ public class FoundItemResponseDTO {
     private String description;
     private String imagePath;
     private String status;
-    private LocalDateTime foundDate;
+    private LocalDateTime createdAt;
+    private String location;
     private String staffName;
 }

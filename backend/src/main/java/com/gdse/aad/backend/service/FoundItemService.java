@@ -11,5 +11,6 @@ public interface FoundItemService {
     void archiveFoundItem(Long id);
     FoundItemResponseDTO updateFoundItem(Long id, FoundItemRequestDTO dto);
     String matchItem(Long foundItemId, Long lostItemId);
-
+    List<FoundItemResponseDTO> getArchivedFoundItems();
+    FoundItemResponseDTO getFoundItemById(Long id);
 }

@@ -88,5 +88,11 @@ public class LostItemController {
         lostItemService.archiveLostItem(id);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Archived", null));
     }
+
+    @GetMapping("/archived")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    public ResponseEntity<ApiResponseDTO> getArchivedLostItems() {
+        return ResponseEntity.ok(new ApiResponseDTO(200, "OK", lostItemService.getArchivedLostItems()));
+    }
 }
 

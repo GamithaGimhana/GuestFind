@@ -15,5 +15,5 @@ public interface LostItemService {
     LostItemResponseDTO updateStatus(Long id, String status);
     List<LostItemResponseDTO> getLostItemsByGuest(String email);
     void archiveLostItem(Long id);
-
+    List<LostItemResponseDTO> getArchivedLostItems();
 }
