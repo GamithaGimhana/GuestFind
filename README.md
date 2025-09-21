@@ -121,7 +121,7 @@ Simply open `index.html` in your browser.
 
 ## Demo Video
 
-📺 [Watch the Demo](https://example.com/demo-placeholder)
+📺 [Watch the Demo](https://youtu.be/S03Ys5PPbVU)
 
 ---
 
