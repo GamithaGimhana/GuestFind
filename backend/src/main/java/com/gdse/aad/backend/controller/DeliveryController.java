@@ -18,9 +18,13 @@ public class DeliveryController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','GUEST')")
-    public ResponseEntity<ApiResponseDTO> createDelivery(
-            @RequestBody DeliveryDTO dto,
-            Authentication authentication) {
+    public ResponseEntity<ApiResponseDTO> createDelivery(@RequestBody DeliveryDTO dto, Authentication authentication) {
+        boolean exists = deliveryService.existsByLostItemId(dto.getLostItemId());
+        if (exists) {
+            return ResponseEntity
+                    .status(400)
+                    .body(new ApiResponseDTO(400, "Delivery already requested for this item", null));
+        }
         String email = authentication.getName();
         DeliveryDTO created = deliveryService.createDelivery(dto, email);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Created", created));
@@ -28,15 +32,13 @@ public class DeliveryController {
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponseDTO> updateStatus(
-            @PathVariable Long id,
-            @RequestParam String status) {
+    public ResponseEntity<ApiResponseDTO> updateStatus(@PathVariable Long id, @RequestParam String status) {
         DeliveryDTO updated = deliveryService.updateStatus(id, status);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Updated", updated));
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
     public ResponseEntity<ApiResponseDTO> getAllDeliveries() {
         return ResponseEntity.ok(new ApiResponseDTO(200, "OK", deliveryService.getAllDeliveries()));
     }

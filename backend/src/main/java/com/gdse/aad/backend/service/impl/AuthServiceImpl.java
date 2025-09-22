@@ -113,4 +113,12 @@ public class AuthServiceImpl implements AuthService {
         guestRepository.save(guest);
         return "Guest registered successfully";
     }
+
+    @Override
+    public boolean emailExists(String email) {
+        boolean staffExists = hotelStaffRepository.existsByEmailIgnoreCase(email);
+        boolean guestExists = guestRepository.existsByEmailIgnoreCase(email);
+        return staffExists || guestExists;
+    }
+
 }

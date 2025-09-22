@@ -8,4 +8,7 @@ public interface AuthService {
 
     String guestRegister(GuestRegisterDTO dto);
     AuthResponseDTO guestAuthenticate(AuthDTO dto);
+
+    boolean emailExists(String email);
+
 }

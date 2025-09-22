@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface HotelStaffRepository extends JpaRepository<HotelStaff, Long> {
     Optional<HotelStaff> findByEmail(String email);
+    boolean existsByEmailIgnoreCase(String email);
 }

@@ -63,7 +63,7 @@ public class FoundItemController {
 
     // Match a found item with a lost item
     @PostMapping("/matches")
-    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF','GUEST')")
     public ResponseEntity<ApiResponseDTO> matchItem(@RequestParam Long foundItemId, @RequestParam Long lostItemId) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Matched", foundItemService.matchItem(foundItemId, lostItemId))
@@ -71,7 +71,7 @@ public class FoundItemController {
     }
 
     @GetMapping("/archived")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<ApiResponseDTO> getArchivedFoundItems() {
         return ResponseEntity.ok(new ApiResponseDTO(200, "OK", foundItemService.getArchivedFoundItems()));
     }

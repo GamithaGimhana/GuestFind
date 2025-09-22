@@ -45,7 +45,7 @@ public class ClaimController {
     }
 
     @PutMapping("/{id}/approve")
-    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<ApiResponseDTO> approveClaim(@PathVariable Long id) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Claim Approved", claimService.approveClaim(id))
@@ -53,7 +53,7 @@ public class ClaimController {
     }
 
     @PutMapping("/{id}/reject")
-    @PreAuthorize("hasRole('STAFF') or hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<ApiResponseDTO> rejectClaim(@PathVariable Long id, @RequestParam String reason) {
         return ResponseEntity.ok(
                 new ApiResponseDTO(200, "Claim Rejected", claimService.rejectClaim(id, reason))

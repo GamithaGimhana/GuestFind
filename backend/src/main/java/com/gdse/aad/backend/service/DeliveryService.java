@@ -9,4 +9,5 @@ public interface DeliveryService {
     DeliveryDTO updateStatus(Long id, String status);
     List<DeliveryDTO> getAllDeliveries();
     DeliveryDTO getDeliveryByLostItem(Long lostItemId);
+    boolean existsByLostItemId(Long lostItemId);
 }

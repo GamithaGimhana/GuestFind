@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -43,4 +45,11 @@ public class AuthController {
         AuthResponseDTO response = authService.guestAuthenticate(dto);
         return ResponseEntity.ok(new ApiResponseDTO(200, "Login successful", response));
     }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<ApiResponseDTO> checkEmail(@RequestParam String email) {
+        boolean exists = authService.emailExists(email);
+        return ResponseEntity.ok(new ApiResponseDTO(200, exists ? "Email exists" : "Email available", Map.of("exists", exists)));
+    }
+
 }

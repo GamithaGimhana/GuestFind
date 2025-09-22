@@ -77,7 +77,7 @@ public DeliveryDTO updateStatus(Long id, String status) {
     delivery.setStatus(Delivery.Status.valueOf(status.toUpperCase()));
     Delivery updated = deliveryRepository.save(delivery);
 
-    // ✅ notify guest if shipped or delivered
+    //  notify guest if shipped or delivered
     LostItem lostItem = updated.getLostItem();
     if (lostItem != null && lostItem.getGuest() != null) {
         String message = null;
@@ -126,4 +126,10 @@ public DeliveryDTO updateStatus(Long id, String status) {
         dto.setStatus(delivery.getStatus().name());
         return dto;
     }
+
+    @Override
+    public boolean existsByLostItemId(Long lostItemId) {
+        return deliveryRepository.existsByLostItem_LostId(lostItemId);
+    }
+
 }
