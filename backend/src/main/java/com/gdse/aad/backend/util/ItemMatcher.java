@@ -14,14 +14,14 @@ public class ItemMatcher {
         String foundTitle = found.getTitle() != null ? found.getTitle().toLowerCase() : "";
 
         // Exact match OR one contains the other
-        if (lostTitle.equals(foundTitle)) return true;
-        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;
+        if (lostTitle.equals(foundTitle)) return true;      // exact match
+        if (lostTitle.contains(foundTitle) || foundTitle.contains(lostTitle)) return true;      // one contains the other
 
         // Description-based check
         String lostDesc = lost.getDescription() != null ? lost.getDescription().toLowerCase() : "";
         String foundDesc = found.getDescription() != null ? found.getDescription().toLowerCase() : "";
 
         return !lostDesc.isEmpty() && !foundDesc.isEmpty() &&
-                (lostDesc.contains(foundDesc) || foundDesc.contains(lostDesc));
+                (lostDesc.contains(foundDesc) || foundDesc.contains(lostDesc));     // both descriptions exist and one contains the other
     }
 }

@@ -1716,16 +1716,21 @@ async function uploadImageToImgbb(file) {
         });
 
         if (response && response.data && response.data.url) {
+            const uploadedImageUrl = response.data.url;
+
             if ($('#proofPreview').length) {
                 $('#proofPreview').html(`
-                            <div class="alert alert-success">
-                                <i class="fas fa-check-circle me-2"></i>
-                                Image uploaded successfully!
-                            </div>
-                        `);
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Image uploaded successfully!
+                    </div>
+                `);
             }
+
+            // store it if you need to reference later
             $('#claimProofImageUrl').val(uploadedImageUrl);
-            return response.data.url;
+
+            return uploadedImageUrl;
         } else {
             throw new Error("Invalid response from imgbb");
         }
@@ -1734,11 +1739,11 @@ async function uploadImageToImgbb(file) {
         showError("Failed to upload image. Please try again.");
         if ($('#proofPreview').length) {
             $('#proofPreview').html(`
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            Upload failed
-                        </div>
-                    `);
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Upload failed
+                </div>
+            `);
         }
         return null;
     }

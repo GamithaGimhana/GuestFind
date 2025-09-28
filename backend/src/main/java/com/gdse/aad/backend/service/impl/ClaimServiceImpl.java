@@ -85,10 +85,10 @@ public class ClaimServiceImpl implements ClaimService {
         // notify guest
         notificationService.sendNotification(claim.getGuest(), "Your claim update: " + replyMessage);
 
-        // if approved, mark found item as CLAIMED/UNCLAIMED-> matched etc (depends on your FoundItem.Status)
+        // if approved, mark found item as CLAIMED/UNCLAIMED-> matched
         if (approve) {
             FoundItem found = claim.getFoundItem();
-            found.setStatus(FoundItem.Status.CLAIMED); // ensure you have CLAIMED enum or adjust
+            found.setStatus(FoundItem.Status.CLAIMED); // ensure have CLAIMED enum or adjust
             foundItemRepository.save(found);
         }
     }
